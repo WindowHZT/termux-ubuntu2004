@@ -1,1 +1,597 @@
-你好
+
+#字体颜色
+red="\e[31;1m"      #红
+green="\e[32;1m"   #绿
+yellow="\e[33;1m"  #黄
+blue="\e[34;1m"    #蓝
+purple="\e[35;1m"    #紫红
+cyanine="\e[36;1m"    #青蓝
+white="\e[0m"
+
+msg() { clear;echo -e "\n\t\t$blue[*]$white$1$2$white\n" ;:;}  ##自定义通告颜色
+enter() { echo -en "\n\n$green按回车继续$white";read op ;:;}  ##
+s=0
+
+:<<EOF
+	case $op in
+    	1)
+    		
+    		;;
+    	2)
+    		
+    		;;
+    	3)
+    		
+    		;;
+    	4)
+    		
+    		;;
+    	5)
+    		
+    		;;
+	esac
+EOF
+
+
+
+
+
+
+##🍎
+_chromium(){
+	_i(){
+		msg $red "安装Chromium浏览器"
+		sudo apt-get install apt-utils -y
+		sudo apt purge chromium* chromium-browser* snapd -y -qq 
+		sudo apt autoremove -y -qq
+		sudo apt purge chromium* chromium-browser* -y -qq 
+		sudo apt autoremove -y -qq
+		sudo apt update -qq
+		sudo apt install software-properties-common gnupg --no-install-recommends -y -qq
+		echo "deb http://ftp.debian.org/debian buster main
+		deb http://ftp.debian.org/debian buster-updates main" >> /etc/apt/sources.list
+
+		apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DCC9EFBF77E11517
+		apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138
+		apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AA8E81B4331F7F50
+		apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A
+
+		sudo apt update -y
+		sudo apt install chromium -y
+		sed -i 's/chromium %U/chromium --no-sandbox --test-type %U/g' /usr/share/applications/chromium.desktop
+		
+		cat <<-EOF > ~/Desktop/chromium.desktop
+		[Desktop Entry]
+		Version=1.0
+		Name=Chromium Web Browser
+		Exec=/usr/bin/chromium --no-sandbox --test-type %U
+		Terminal=false
+		X-MultipleArgs=false
+		Type=Application
+		Icon=chromium
+		Categories=Network;WebBrowser;
+		MimeType=text/html;text/xml;application/xhtml_xml;application/x-mimearchive;x-scheme-handler/http;x-scheme-handler/https;
+		StartupWMClass=chromium
+		StartupNotify=true
+		EOF
+
+		msg $green "安装完毕～"
+		enter
+	}
+	
+	_d(){
+		msg $red "卸载Chromium浏览器"
+		sudo apt purge chromium* chromium-browser* snapd -y -qq 
+		sudo apt autoremove -y -qq
+		rm -rf ~/Desktop/chromium.desktop
+		
+		msg $green "卸载完毕～"
+		enter
+	}
+	
+	OPTIONS=(
+         1 "安装Chromium浏览器"
+         2 "卸载Chromium浏览器"
+         3 "取消")
+    
+    _dialog "首页→安装/卸载软件→Chromium浏览器" "请选择" $OPTIONS
+
+	case $op in
+    	1)
+    		_i
+    		;;
+    	2)
+    		_d
+    		;;
+    	*)
+    		return
+    		;;
+	esac
+}
+
+##🍎
+_firefox(){
+	_i(){
+		##把火狐更到最新版
+		msg $red "安装firefox浏览器"
+		sudo apt update -y
+		sudo apt upgrade -y
+		sudo apt purge firefox -y
+		#apt install gnupg gnupg2 gnupg1 software-properties-common plank -y
+		sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A6DCF7707EBC211F	
+		sudo apt-add-repository "deb http://ppa.launchpad.net/ubuntu-mozilla-security/ppa/ubuntu bionic main"
+		sudo apt update -y
+		sudo apt install firefox -y
+		
+		cat <<-EOF > ~/Desktop/firefox.desktop
+		[Desktop Entry]
+		Name=firefox
+		Comment=firefox
+		Exec=/usr/lib/firefox/firefox
+		Icon=/usr/lib/firefox/browser/chrome/icons/default/default128.png
+		Terminal=false
+		Type=Application
+		Categories=Application;
+		Encoding=UTF-8
+		StartupNotify=true
+		EOF
+		
+		chmod +x ~/Desktop/firefox.desktop
+		msg $green "安装完毕～"
+		echo -e "\n\n\t$red注意：由于火狐的兼容性，可能会导致浏览器崩溃的情况$white"
+		echo -e "\t$red解决方法：打开火狐在地址栏输入 about:config 回车，然后接受风险告知(Accept the risk and continue)$white"
+		echo -e "\t$red然后在小搜索栏里面输入 sandbox $white"
+		echo -e "\t$red把 media.cubeb.sandbox 的值改为 false$white"
+		echo -e "\t$red把 security.sandbox.content.level 的值改成 0$white"
+		enter
+		echo -e "$red这将会导致你的浏览器无法使用，请你截图或记住解决方案！$white"
+		enter
+	}
+	
+	_d(){
+		msg $red "卸载firefox浏览器"
+		sudo apt purge firefox -y 
+		rm -rf ~/Desktop/firefox.desktop
+		
+		msg $green "卸载完毕～"
+		enter
+	}
+	
+	OPTIONS=(
+         1 "安装firefox浏览器"
+         2 "卸载firefox浏览器"
+         3 "取消")
+    
+    _dialog "首页→安装/卸载软件→火狐firefox浏览器" "请选择" $OPTIONS
+
+	case $op in
+    	1)
+    		_i
+    		;;
+    	2)
+    		_d
+    		;;
+    	*)
+    		return
+    		;;
+	esac
+
+}
+
+##🍎
+_idea(){
+	_i(){
+		cd /opt
+		if [ "$1" == "1" ];then
+			if [ -d /opt/ideaIC ];then
+				OPTIONS=(
+	        	1 "是"
+        		2 "否")
+        		
+    			_dialog "首页→安装软件→IntelliJ IDEA" "检测到你之前已经安装过ideaIC版，是否卸载重装？" $OPTIONS
+				case $op in
+    				1)
+			    		rm -rf /opt/ideaIC
+   				 		;;
+			    	*)
+			    		return
+			    		;;
+				esac
+			fi
+
+			msg $red "安装IntelliJ IDEA免费版"
+			echo -e "\n$green请保持网络通畅（本次下载可以不用加速器！）$white"
+			##免费版
+			wget -c https://download-cdn.jetbrains.com/idea/ideaIC-2022.2.tar.gz
+			[ "$?" == "0" ] && mkdir /opt/ideaIC && tar -zxvf /opt/ideaIC-2022.2.tar.gz -C /opt/ideaIC --strip-components 1
+
+			##创建桌面图标
+			cat <<-EOF> ~/Desktop/ideaIC.desktop
+			[Desktop Entry]
+			Name=IntelliJ IDEA
+			Comment=IntelliJ IDEA
+			Exec=/opt/ideaIC/bin/idea.sh
+			Icon=/opt/ideaIC/bin/idea.png
+			Terminal=false
+			Type=Application
+			Categoories=Developer;
+			EOF
+			
+			chmod +x /opt/ideaIC/bin/idea.sh
+			chmod u+x ~/Desktop/ideaIC.desktop
+		else
+			if [ -d /opt/ideaIU ];then
+				OPTIONS=(
+	        	1 "是"
+        		2 "否")
+        		
+    			_dialog "首页→安装软件→IntelliJ IDEA" "检测到你之前已经安装过ideaIU版，是否卸载重装？" $OPTIONS
+				case $op in
+    				1)
+			    		rm -rf /opt/ideaIU
+   				 		;;
+			    	*)
+			    		return
+			    		;;
+				esac
+			fi
+			msg $red "安装IntelliJ IDEA付费版"
+			echo -e "\n$green请保持网络通畅（本次下载可以不用加速器！）$white"
+			##付费版
+			wget -c https://download-cdn.jetbrains.com/idea/ideaIU-2022.2.tar.gz 
+			[ "$?" == "0" ] && mkdir /opt/ideaIU && tar -zxvf /opt/ideaIU-2022.2.tar.gz -C /opt/ideaIU --strip-components 1
+			
+			##创建桌面图标
+			cat <<-EOF> ~/Desktop/ideaIU.desktop
+			[Desktop Entry]
+			Name=IntelliJ IDEA
+			Comment=IntelliJ IDEA
+			Exec=/opt/ideaIU/bin/idea.sh
+			Icon=/opt/ideaIU/bin/idea.png
+			Terminal=false
+			Type=Application
+			Categoories=Developer;
+			EOF
+			
+			chmod +x /opt/ideaIU/bin/idea.sh
+			chmod u+x ~/Desktop/ideaIU.desktop
+		fi
+		
+		
+		##安装Java
+		msg $red "安装Java环境！"
+		sudo apt-get install  default-jre* -y
+		
+		rm -rf ideaIC-2022.2.tar.gz ideaIU-2022.2.tar.gz 
+		cd ~
+		msg $green "安装完毕～"
+		echo -e "\n\n\t$red如果因网络波动没有安装成功的，请卸载重装！$white"
+		enter
+	}
+	
+	_d(){
+		if [ "$1" == 1 ];then
+			msg $red "卸载IntelliJ IDEA免费版"
+			rm -rf /opt/ideaIC /opt/ideaIC.desktop
+		else
+			msg $red "卸载IntelliJ IDEA付费版"
+			rm -rf /opt/ideaIU /opt/ideaIU.desktop
+		fi
+		
+		msg $green "卸载完毕～"
+		enter
+	}
+	
+	OPTIONS=(
+         1 "安装IntelliJ IDEA"
+         2 "卸载IntelliJ IDEA"
+         3 "取消")
+    
+    _dialog "首页→安装/卸载软件→IntelliJ IDEA 2022.2版本" "请选择" $OPTIONS
+
+	case $op in
+    	1)
+    		OPTIONS=(
+	        1 "社区版IC_免费"
+ 	        2 "企业版IU_付费"
+  		    3 "取消")
+			
+			_dialog "首页→安装软件→IntelliJ IDEA" "请选择" $OPTIONS
+			
+			case $op in
+		    	1)
+  			  		_i 1
+    				;;
+		    	2)
+		    		_i 2
+ 			  		;;
+    			*)
+    				return
+	    		;;
+			esac
+    		;;
+    	2)
+    		OPTIONS=(
+	        1 "社区版IC_免费"
+ 	        2 "企业版IU_付费"
+  		    3 "取消")
+			
+			_dialog "首页→卸载软件→IntelliJ IDEA" "请选择" $OPTIONS
+			
+			case $op in
+		    	1)
+  			  		_d 1
+    				;;
+		    	2)
+		    		_d 2
+ 			  		;;
+    			*)
+    				return
+	    			;;
+			esac
+    		;;
+    	*)
+    		return
+    		;;
+	esac
+}
+
+##🍎
+_xrdp(){
+	_i(){	
+		msg $red "安装xrdp DR远程桌面"
+		sudo apt install xrdp -y
+		sed -i '6{s/^/xfce4-session/}' /etc/X11/Xsession
+		echo xfce4-session >~/.xsession
+		sed -i "s#port=-1#port=5901#g" /etc/xrdp/xrdp.ini
+		
+		msg $green "安装完毕～"
+		enter
+	}
+	
+	_d(){
+		msg $red "卸载xrdp DR远程桌面"
+		sudo apt purge xrdp -y
+		msg $green "卸载完毕～"
+		enter
+	}
+	
+	OPTIONS=(
+         1 "安装xrdp DR远程桌面"
+         2 "卸载xrdp DR远程桌面"
+         3 "取消")
+    
+    _dialog "首页→安装/卸载软件→xrdp DR远程桌面" "请选择" $OPTIONS
+
+	case $op in
+    	1)
+    		_i
+    		;;
+    	2)
+    		_d
+    		;;
+    	*)
+    		return
+    		;;
+	esac
+}
+
+##🍎
+_eclipse(){
+	echo
+}
+
+##🍎
+_qq(){
+	msg $red "听说你想安装QQ？"
+	echo -en "$green老老实实用手机QQ叭……你还嫌内存用不完吗？$white"
+	enter
+}
+
+
+
+##安装/卸载软件🍎
+_app(){
+	OPTIONS=(
+         1 "Cchromium浏览器"
+         2 "火狐firefox浏览器"
+         3 "IntelliJ IDEA"
+         4 "VSCode"
+         5 "Eclipse"
+         6 "xrdp DR远程桌面"
+         7 "QQ"
+         8 "取消")
+	
+	_dialog "首页→安装/卸载软件" "请选择" $OPTIONS
+	
+	case $op in
+    	1)
+    		_chromium
+    		;;
+    	2)
+    		_firefox
+    		;;
+    	3)
+    		_idea
+    		;;
+    	4)
+    		_vscode
+    		;;
+    	5)
+    		_eclipse
+    		;;
+    	6)
+    		_xrdp
+    		;;
+    	7)
+    		_qq
+    		;;
+    	*)
+    		return
+    	;;
+	esac
+}
+
+##主题-------------------------------------------------------工作区---------------------------------------------------------------------------------------------------------
+_theme(){
+		
+	_icon(){
+	
+    	OPTIONS=(
+         1 "Vimix风格 （推荐）"
+         2 "Mac OS风格"
+         3 "Prof-XFCE-theme风格"
+         4 "取消")
+
+    	_dialog "首页→桌面美化→软件图标" "请选择" $OPTIONS
+
+		case $op in
+    	1)
+    		_vimix
+    		;;
+    	2)
+    		_macos
+    		;;
+    	3)
+    		_prof
+    		;;
+    	*)
+    		return
+    		;;
+		esac		
+	}
+		
+	
+	[ "`command -v git`" == "" ]&&sudo apt install git -y
+	
+		OPTIONS=(
+			1 "桌面背景"
+			2 "主题"
+			3 "软件图标"
+			4 "光标(鼠标)"
+			5 "取消")
+
+    _dialog "首页→桌面美化" "请选择" $OPTIONS
+    
+	case $op in
+    	1)
+    		_bg
+    		;;
+    	2)
+    		_th
+    		;;
+    	3)
+    		_icon
+    		;;
+    	4)
+    		_mouse
+    		;;
+    	*)
+    		return
+    		;;
+	esac
+
+
+}
+##主题----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+##更换语言
+_language(){
+	echo
+}
+
+##终端美化
+_term(){
+	echo
+}
+
+##作者留言
+_other(){
+	clear
+	echo -e "$red很幸运与你相遇～～$white"
+	enter
+}
+
+_dialog(){
+	export LC_ALL="zh_CN.UTF-8"
+	export PORT=1
+	
+	dialog --clear \
+		--backtitle "$1" \
+		--title "@参꒰ঌ( ˶'-'˶) ໒꒱芜湖起飞" \
+	 	--nocancel \
+	 	--menu "$2" 20 40 8 \
+		"${OPTIONS[@]}" \
+	 	2>/tmp/menu
+	 	
+	 	export op=`cat /tmp/menu`
+}
+
+
+
+_Main(){
+	OPTIONS=(
+         1 "安装/卸载软件"
+         2 "桌面美化"
+         3 "更换语言"
+         4 "美化终端"
+         5 "作者留言"
+         6 "vnc 信息"
+         7 "版本信息"
+         8 "退出")
+    
+    _dialog "首页" "使用↑↓选择，也可以用手点击选项再回车哦" $OPTIONS
+	
+    case $op in 
+    	1)
+    		_app
+    		;;
+    	2)
+    		_theme
+    		;;
+    	3)
+    		_language
+    		;;
+    	4)
+    		_term
+    		;;
+    	5)
+    		_other
+    		;;
+    	6)
+    		clear
+    		vnc
+    		enter
+    		;;
+    	7)
+    		msg $red "ubuntu设备信息"
+			echo -e "$green----------------版本-----------------$white"
+			lsb_release -a
+			echo -e "$green----------------磁盘-----------------$white"
+			df -hl
+    		enter
+    		;;
+    	*)
+    		clear
+    		export s=1
+    		;;
+esac
+}
+
+while :
+do
+	if [ "$s" == "0" ];then
+		_Main
+	else
+		break
+	fi
+done
+
+
+
+
+
+
+
