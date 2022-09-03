@@ -337,6 +337,67 @@ _idea(){
 	esac
 }
 
+_vscode(){
+	
+	
+	
+	_i(){
+		msg $red "安装Visual Studio Code"
+		wget -c https://az764295.vo.msecnd.net/stable/784b0177c56c607789f9638da7b6bf3230d47a8c/code_1.71.0-1662017130_arm64.deb -O ~/Downloads/VScode.tar.gz
+		sudo dpkg -i ~/Downloads/VScode.tar.gz
+		sudo apt --fix-broken install
+		
+		cat<<-EOF > ~/Desktop/VScode.desktop
+		[Desktop Entry]
+		Name=Visual Studio Code
+		Comment=Multi-platform code editor for Linux
+		Exec=/usr/share/code/bin/code --user-data-dir=~/.vscode --no-sandbox .
+		Icon=/usr/share/code/resources/app/resources/linux/code.png
+		Type=Application
+		StartupNotify=true
+		Categories=TextEditor;Development;Utility;
+		MimeType=text/plain;
+		EOF
+
+		chmod +x ~/Desktop/VScode.desktop
+		msg $green "安装完毕～"
+		echo -e "\n\n\t$red如果因网络波动没有安装成功的，请卸载重装！$white"
+		enter
+	}
+	
+	_d(){
+		msg $red "卸载Visual Studio Code"
+		sudo dpkg -r code
+		
+		rm -rf ~/Desktop/VScode.desktop
+		msg $green "卸载完毕～"
+		enter
+	}
+	
+	OPTIONS=(
+         1 "安装Visual Studio Code"
+         2 "卸载Visual Studio Code"
+         3 "取消")
+    
+    _dialog "首页→安装/卸载软件→Visual Studio Code" "请选择" $OPTIONS
+
+	case $op in
+    	1)
+    		_i
+    		;;
+    	2)
+    		_d
+    		;;
+    	*)
+    		return
+    		;;
+	esac
+
+
+}
+
+
+
 ##🍎
 _xrdp(){
 	_i(){	
