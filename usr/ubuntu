@@ -343,8 +343,8 @@ _vscode(){
 	
 	_i(){
 		msg $red "安装Visual Studio Code"
-		wget -c https://az764295.vo.msecnd.net/stable/784b0177c56c607789f9638da7b6bf3230d47a8c/code_1.71.0-1662017130_arm64.deb -O ~/Downloads/VScode.tar.gz
-		sudo dpkg -i ~/Downloads/VScode.tar.gz
+		wget -c https://az764295.vo.msecnd.net/stable/784b0177c56c607789f9638da7b6bf3230d47a8c/code_1.71.0-1662017130_arm64.deb -O ~/Downloads/VScode.deb
+		sudo dpkg -i ~/Downloads/VScode.deb
 		sudo apt --fix-broken install
 		
 		cat<<-EOF > ~/Desktop/VScode.desktop
