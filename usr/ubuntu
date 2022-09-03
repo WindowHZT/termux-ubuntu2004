@@ -833,6 +833,7 @@ _update(){
 	
 	wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/ubuntu" -O "/tmp/ubuntu"
 	mv /tmp/ubuntu /usr/local/bin/ubuntu
+	chmod +x /usr/local/bin/ubuntu
 	msg $green "更新完毕～"
 	enter
 
