@@ -345,7 +345,7 @@ _vscode(){
 		msg $red "安装Visual Studio Code"
 		wget -c https://az764295.vo.msecnd.net/stable/784b0177c56c607789f9638da7b6bf3230d47a8c/code_1.71.0-1662017130_arm64.deb -O ~/Downloads/VScode.deb
 		sudo dpkg -i ~/Downloads/VScode.deb
-		sudo apt --fix-broken install
+		sudo apt --fix-broken install -y
 		
 		cat<<-EOF > ~/Desktop/VScode.desktop
 		[Desktop Entry]
@@ -819,6 +819,25 @@ _other(){
 	enter
 }
 
+_update(){
+	msg $red "更新ubuntu脚本"
+	echo -e "\n\t$green------------------------------$white"
+	echo -e "\t$red ubuntu脚本迭代更新信息$white"
+	echo -e "\t (1)ubuntu 1.0 最初代脚本$white"
+	echo -e "\t (1)ubuntu 1.5 最初代脚本$red（当前版本）$white"
+	echo -e "\t     ●添加_软件安装_功能$white"
+	echo -e "\t     ●添加_桌面美化_功能$white"
+	echo -e "\t$green------------------------------$white"
+	echo -e "\n\n\t作者不定时更新脚本，如想体验新功能，更新ubuntu脚本即可体验！"
+	enter
+	
+	wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/ubuntu" -O "/tmp/ubuntu"
+	mv /tmp/ubuntu /usr/local/bin/ubuntu
+	msg $green "更新完毕～"
+	enter
+
+}
+
 _dialog(){
 	export LC_ALL="zh_CN.UTF-8"
 	export PORT=1
@@ -845,7 +864,8 @@ _Main(){
          4 "作者留言"
          5 "vnc 信息"
          6 "版本信息"
-         7 "退出")
+         7 "更新ubuntu脚本"
+         8 "退出")
     
     _dialog "首页" "使用↑↓选择，也可以用手点击选项再回车哦" $OPTIONS
 	
@@ -874,6 +894,9 @@ _Main(){
 			echo -e "$green----------------磁盘-----------------$white"
 			df -hl
     		enter
+    		;;
+    	7)
+    		_update
     		;;
     	*)
     		clear
