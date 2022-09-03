@@ -167,6 +167,9 @@ _xfce(){
 	echo \$\$ > /tmp/xsession.pid
 	dbus-launch --exit-with-session startxfce4 &
 	EOF
+	
+	
+	sudo apt-get install fonts-wqy-microhei -y
 
 	echo "export DISPLAY=\":1\"" >> /etc/profile
 	source /etc/profile
@@ -175,11 +178,18 @@ _xfce(){
 
 
 if [ ! -e $CONFIG  ];then
+
 	_xfce
 	echo " " > $CONFIG
 	_DPI
 	export LC_ALL=""
+	##设置面板图标
+	mkdir -p ~/.icons
+	wget https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/mix/ubuntu-logo-icon.png -O ~/.icons/ubuntu-logo-icon.png
+	export DISPLAY=:1
+	xfconf-query -c xfce4-panel -np '/plugins/plugin-1/button-icon' -t 'string' -s '/home/hzt/.icons/ubuntu-logo-icon.png'
 	_start
+	
 	
 	startTime=`cat /data/data/com.termux/files/home/Time`
 	rm -rf /data/data/com.termux/files/home/Time
@@ -187,6 +197,7 @@ if [ ! -e $CONFIG  ];then
 	st=`date -d  "$startTime" +%s`
 	et=`date -d  "$endTime" +%s`
 	sumTime=$(($et-$st))
+	
 	echo -e "\n\n\t安装ubuntu20.04总耗时 : $sumTime second."
 	exit
 fi

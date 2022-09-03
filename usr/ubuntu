@@ -74,7 +74,8 @@ _chromium(){
 		StartupWMClass=chromium
 		StartupNotify=true
 		EOF
-
+		
+		chmod +x  ~/Desktop/chromium.desktop
 		msg $green "安装完毕～"
 		enter
 	}
@@ -434,41 +435,236 @@ _app(){
 
 ##主题-------------------------------------------------------工作区---------------------------------------------------------------------------------------------------------
 _theme(){
-		
-	_icon(){
 	
-    	OPTIONS=(
-         1 "Vimix风格 （推荐）"
-         2 "Mac OS风格"
-         3 "Prof-XFCE-theme风格"
-         4 "取消")
+	##.icons
+	_ICONS=(
+	"Colloid-cursors.tar.xz"
+	"Colloid-dark-cursors.tar.xz"
+	"Fluent-cursors.tar.xz"
+	"Fluent-dark-cursors.tar.xz"
+	"Layan-border-cursors.tar.xz"
+	"Layan-cursors.tar.xz"
+	"Layan-white-cursors.tar.xz"
+	"Nordzy-cursors-lefthand.tar.xz"
+	"Nordzy-cursors-white.tar.xz"
+	"Nordzy-cursors.tar.xz"
+	"WhiteSur-cursors.tar.xz"
+	"oreo_black_cursors.tar.xz"
+	"oreo_spark_green_cursors.tar.xz"
+	"oreo_spark_purple_cursors.tar.xz"
+	"oreo_spark_red_cursors.tar.xz"
+	"volantes_cursors.tar.xz"
+	)
+	
+	##.themes
+	THEMES=(
+	"Mojave-Dark.tar.xz"
+	"Mojave-Light.tar.xz"
+	"Nordic.tar.xz"
+	"WhiteSur-Light-green.tar.xz"
+	"WhiteSur-Light-red.tar.xz"
+	"vimix-amethyst.tar.xz"
+	"vimix-beryl.tar.xz"
+	"vimix-dark-amethyst.tar.xz"
+	"vimix-dark-beryl.tar.xz"
+	"vimix-dark-doder.tar.xz"
+	"vimix-dark-ruby.tar.xz"
+	"vimix-dark.tar.xz"
+	"vimix-doder.tar.xz"
+	"vimix-light-amethyst.tar.xz"
+	"vimix-light-beryl.tar.xz"
+	"vimix-light-doder.tar.xz"
+	"vimix-light-ruby.tar.xz"
+	"vimix-light.tar.xz"
+	"vimix-ruby.tar.xz"
+	"vimix.tar.xz"
+	)
+	
+	##background
+	BG=(
+	"Layan1.tar.xz"
+	"Layan2.tar.xz"
+	"MacOS1.tar.xz"
+	"MacOS3.tar.xz"
+	"inMouse_5K.tar.xz"
+	"inMouse_WQHD.tar.xz"
+	"sweet.tar.xz"
+	)
+	
+	##icons
+	ICONS=(
+	"Marwaita.tar.xz"
+	"McMojave-circle-dark.tar.xz"
+	"McMojave-circle.tar.xz"
+	"Qogir-dark.tar.xz"
+	"Qogir.tar.xz"
+	"Reversal-black.tar.xz"
+	"Reversal-blue.tar.xz"
+	"Reversal-brown.tar.xz"
+	"Reversal-cyan.tar.xz"
+	"Reversal-green.tar.xz"
+	"Reversal-grey.tar.xz"
+	"Reversal-orange.tar.xz"
+	"Reversal-pink.tar.xz"
+	"Reversal-purple.tar.xz"
+	"Reversal-red.tar.xz"
+	"Tela-circle-dark.tar.xz"
+	"Tela-circle.tar.xz"
+	"WhiteSur-dark.tar.xz"
+	"WhiteSur.tar.xz"
+	)
+	
+	_changeOP(){
+		tmp=""
+		count=1
+		export FILE=()
+		for x in $*
+		do
+			printf " $count" >> /tmp/file
+			printf " $x" >> /tmp/file
+			FILE[$(($count-1))]=$x
+			let count++
+		done
+		
+		sed -i "s#.tar.xz##g"  /tmp/file
+		printf " $count" >> /tmp/file
+		printf " 取消" >> /tmp/file
+		export OPTIONS=()
+		count=0
+		for x in `cat  /tmp/file`
+		do
+			OPTIONS[$count]="$x"
+			let count++
+		done
+		rm -rf /tmp/file
+	}
+	
+	_bg(){
+		_changeOP ${BG[@]}
+		_dialog "首页→桌面美化→桌面背景" "请选择" $OPTIONS
+		
+		##选择取消，就退出
+		[ "$op" == "$((${#FILE[*]}+1))" ]&&return
 
-    	_dialog "首页→桌面美化→软件图标" "请选择" $OPTIONS
+		package=${FILE[$(($op-1))]}
+		[ ! -e /tmp/bg/ ]&&mkdir -p /tmp/bg/
+		
+		if [ ! -e "/tmp/bg/`echo $package | sed "s#.tar.xz##g"`" ];then
+			msg $red "下载资源包…ing"
+			wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/bg/$package" -O "/tmp/bg/$package"
+			
+			msg $red "解压资源…ing"
+			sleep 1
+			xz -d "/tmp/bg/$package"
+			tar -xvhf "/tmp/bg/`echo $package | sed "s#.xz##g"`" -C /tmp/bg/
+		fi
+		
+		
+		image="`echo $package | sed "s#.tar.xz##g"`"
+		for x in jpg png bmp jpeg
+		do
+			if [ -a "/tmp/bg/$image.$x" ];then
+				xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/last-image -s  "/tmp/bg/$image.$x"
+			fi
+		done
+		
+		msg $green "设置桌面背景`echo $package | sed "s#.tar.xz##g"`完成～"
+		echo -e "$green\n\n\t如何桌面背景没有设置成功请检查网络，再重新设置！"
+		enter
+	}
+	
+	_themes(){
+		_changeOP ${THEMES[@]}
+		_dialog "首页→桌面美化→主题" "请选择" $OPTIONS
+		
+		##选择取消，就退出
+		[ "$op" == "$((${#FILE[*]}+1))" ]&&return
 
-		case $op in
-    	1)
-    		_vimix
-    		;;
-    	2)
-    		_macos
-    		;;
-    	3)
-    		_prof
-    		;;
-    	*)
-    		return
-    		;;
-		esac		
+		package=${FILE[$(($op-1))]}
+		[ ! -e /tmp/.themes/ ]&&mkdir -p /tmp/.themes/
+		
+		if [ ! -e "~/.themes/`echo $package | sed "s#.tar.xz##g"`" ];then
+			[ ! -e ~/.themes ]&&mkdir -p ~/.themes 
+			msg $red "下载资源包…ing"
+			wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/.themes/$package" -O "/tmp/.themes/$package"
+			
+			msg $red "解压资源…ing"
+			sleep 1
+			xz -d "/tmp/.themes/$package"
+			tar -xvhf "/tmp/.themes/`echo $package | sed "s#.xz##g"`" -C ~/.themes/
+		fi
+		
+		xfconf-query -c xsettings -p /Net/ThemeName -s "`echo $package | sed "s#.tar.xz##g"`"
+		
+		msg $green "设置主题`echo $package | sed "s#.tar.xz##g"`完成～"
+		echo -e "$green\n\n\t如何主题没有设置成功请检查网络，再重新设置！"
+		enter
+	}
+	
+	_icons(){
+		_changeOP ${ICONS[@]}
+		_dialog "首页→桌面美化→软件图标" "请选择" $OPTIONS
+		
+		##选择取消，就退出
+		[ "$op" == "$((${#FILE[*]}+1))" ]&&return
+
+		package=${FILE[$(($op-1))]}
+		[ ! -e /tmp/icons/ ]&&mkdir -p /tmp/icons/
+		
+		if [ ! -e "~/icons/`echo $package | sed "s#.tar.xz##g"`" ];then
+			[ ! -e ~/.local/share/icons  ]&&mkdir -p ~/.local/share/icons 
+			msg $red "下载资源包…ing"
+			sleep 1
+			wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/icons/$package" -O "/tmp/icons/$package"
+			
+			msg $red "解压资源…ing"
+			xz -d "/tmp/icons/$package"
+			tar -xvhf "/tmp/icons/`echo $package | sed "s#.xz##g"`" -C ~/.local/share/icons 
+		fi
+		
+		xfconf-query -c xsettings -p /Net/IconThemeName -s "`echo $package | sed "s#.tar.xz##g"`"
+		
+		msg $green "设置软件图标`echo $package | sed "s#.tar.xz##g"`完成～"
+		echo -e "$green\n\n\t如何软件图标没有设置成功请检查网络，再重新设置！"
+		enter
+	
 	}
 		
+	_mouse(){
+		_changeOP ${_ICONS[@]}
+		_dialog "首页→桌面美化→光标(鼠标)" "请选择" $OPTIONS
+		
+		##选择取消，就退出
+		[ "$op" == "$((${#FILE[*]}+1))" ]&&return
+
+		package=${FILE[$(($op-1))]}
+		[ ! -e /tmp/.icons/ ]&&mkdir -p /tmp/.icons/
+		
+		if [ ! -e "~/.icons/`echo $package | sed "s#.tar.xz##g"`" ];then
+			[ ! -e ~/.icons  ]&&mkdir -p ~/.icons 
+			msg $red "下载资源包…ing"
+			sleep 1
+			wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/.icons/$package" -O "/tmp/.icons/$package"
+			
+			msg $red "解压资源…ing"
+			xz -d "/tmp/.icons/$package"
+			tar -xvhf "/tmp/.icons/`echo $package | sed "s#.xz##g"`" -C ~/.icons 
+		fi
+		
+		xfconf-query -c xsettings -p /Gtk/CursorThemeName -s "`echo $package | sed "s#.tar.xz##g"`"
+		
+		msg $green "设置光标(鼠标)`echo $package | sed "s#.tar.xz##g"`完成～"
+		echo -e "$green\n\n\t如何光标(鼠标)没有设置成功请检查网络，再重新设置！"
+		enter	
+	}
 	
-	[ "`command -v git`" == "" ]&&sudo apt install git -y
+	
 	
 		OPTIONS=(
-			1 "桌面背景"
-			2 "主题"
-			3 "软件图标"
-			4 "光标(鼠标)"
+			1 "桌面背景"   ##bg
+			2 "主题"    ##.themes
+			3 "软件图标"   ##local/share/icons
+			4 "光标(鼠标)"  ##.icons
 			5 "取消")
 
     _dialog "首页→桌面美化" "请选择" $OPTIONS
@@ -478,10 +674,10 @@ _theme(){
     		_bg
     		;;
     	2)
-    		_th
+    		_themes
     		;;
     	3)
-    		_icon
+    		_icons
     		;;
     	4)
     		_mouse
@@ -491,7 +687,6 @@ _theme(){
     		;;
 	esac
 
-
 }
 ##主题----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -499,7 +694,55 @@ _theme(){
 
 ##更换语言
 _language(){
-	echo
+	_en(){
+		msg $green "更换为英语"
+		sed -i "s#export LC_ALL=zh_CN.UTF-8##g" ~/.bashrc
+		echo -e "$red\n\n\t此操作仅会删除 .bashrc 里面的 export LC_ALL=zh_CN.UTF-8$white"
+		echo -e "$red\n\n\t重启后生效！$white"
+		enter
+	}
+	
+	_zh(){
+		msg $green "更换为中文"
+		[ -z "`dpkg -l | grep fonts-wqy-microhei`" ]&&sudo apt-get install fonts-wqy-microhei -y
+		[ ! -z "`cat /etc/locale.gen|grep '# zh_CN.UTF-8 UTF-8'`" ]&&sed -i "s/# zh_CN.UTF-8 UTF-8/ zh_CN.UTF-8 UTF-8/g" /etc/locale.gen
+		locale-gen
+		
+		[ -z "`cat ~/.bashrc |grep  'export LC_ALL=zh_CN.UTF-8'`" ]&&echo "export LC_ALL=zh_CN.UTF-8" >> ~/.bashrc
+		if [[ "`cat ~/.bashrc`" =~ 'if [ "$TERM"="linux" ] ;then ' ]]; then
+			echo 'string exist'
+		else
+		    cat <<-EOF>>~/.bashrc
+			if [ "\$TERM"="linux" ] ;then 
+				export LANGUAGE=en_US 
+			fi 
+			EOF
+		
+		fi
+		
+		echo -e "$red\n\n\t重启后生效！$white"
+		enter
+	}
+	
+	
+		OPTIONS=(
+			1 "英文"   
+			2 "中文"    
+			3 "取消")
+
+    _dialog "首页→更换语言" "请选择" $OPTIONS
+ 
+	case $op in
+    	1)
+    		_en
+    		;;
+    	2)
+    		_zh
+    		;;
+    	*)
+    		return
+    		;;
+	esac   
 }
 
 ##终端美化
@@ -511,6 +754,7 @@ _term(){
 _other(){
 	clear
 	echo -e "$red很幸运与你相遇～～$white"
+	#echo -e "$red 此ubuntu20.04是up主参考了各大教程所创造的版本！$white"
 	enter
 }
 
@@ -520,7 +764,7 @@ _dialog(){
 	
 	dialog --clear \
 		--backtitle "$1" \
-		--title "@参꒰ঌ( ˶'-'˶) ໒꒱芜湖起飞" \
+		--title "@参(•̀⌄•́)芜湖起飞" \
 	 	--nocancel \
 	 	--menu "$2" 20 40 8 \
 		"${OPTIONS[@]}" \
@@ -536,11 +780,11 @@ _Main(){
          1 "安装/卸载软件"
          2 "桌面美化"
          3 "更换语言"
-         4 "美化终端"
-         5 "作者留言"
-         6 "vnc 信息"
-         7 "版本信息"
-         8 "退出")
+         #4 "美化终端"  ##sh -c "$(curl -fsSL https://gitee.com/mirrors/oh-my-zsh/raw/master/tools/install.sh)"
+         4 "作者留言"
+         5 "vnc 信息"
+         6 "版本信息"
+         7 "退出")
     
     _dialog "首页" "使用↑↓选择，也可以用手点击选项再回车哦" $OPTIONS
 	
@@ -555,17 +799,14 @@ _Main(){
     		_language
     		;;
     	4)
-    		_term
-    		;;
-    	5)
     		_other
     		;;
-    	6)
+    	5)
     		clear
     		vnc
     		enter
     		;;
-    	7)
+    	6)
     		msg $red "ubuntu设备信息"
 			echo -e "$green----------------版本-----------------$white"
 			lsb_release -a
