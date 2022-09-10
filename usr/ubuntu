@@ -445,7 +445,12 @@ _eclipse(){
 
 _wps(){
 	_i(){
-		[ -e "/opt/kingsoft" ] &&clear;echo -e "$red本机已安装有WPS，如想重新安装，请先卸载一遍$white";enter;return
+		if [ -d "/opt/kingsoft" ];then
+			clear
+			echo -e "$red本机已安装有WPS，如想重新安装，请先卸载一遍$white"
+			enter
+			return
+		fi
 		msg $red "安装WPS（本次下载可以不用加速器！）"
 		echo -e "\n$green请保持网络通畅$white"
 		sudo apt install libglu1-mesa bsdmainutils xdg-utils libxslt-dev libxml2-dev python3-pyqt5 ttf-mscorefonts-installer -y
