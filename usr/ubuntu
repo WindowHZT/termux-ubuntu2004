@@ -445,7 +445,7 @@ _eclipse(){
 
 _wps(){
 	_i(){
-		[ -e /opt/kingsoft ] && echo "$red本机已安装有WPS，如想重新安装，请先卸载一遍$white";enter;return
+		[ -n "`dpkg -l |grep wps-office`" ] && echo "$red本机已安装有WPS，如想重新安装，请先卸载一遍$white";enter;return
 		msg $red "安装WPS（本次下载可以不用加速器！）"
 		echo -e "\n$green请保持网络通畅$white"
 		sudo apt install libglu1-mesa bsdmainutils xdg-utils libxslt-dev libxml2-dev python3-pyqt5 ttf-mscorefonts-installer -y
@@ -1136,7 +1136,7 @@ _clear(){
 	msg $red "这仅仅是清理脚本产生的垃圾，请悉知！"
 	enter
 	echo -e "$yellow清理安装包.$white"
-	rm -rf /opt/eclipse.tar.gz /opt/ideaIC-2022.2.tar.gz /opt/ideaIU-2022.2.tar.gz ~/Downloads/VScode.deb /opt/android-studio.tar.gz
+	rm -rf /opt/eclipse.tar.gz /opt/ideaIC-2022.2.tar.gz /opt/ideaIU-2022.2.tar.gz ~/Downloads/VScode.deb /opt/android-studio.tar.gz  /opt/ttf.tar.xz  /opt/wps.deb
 	
 	echo -e "\n$yellow清理美化包..$white"	
 	rm -rf /tmp/.icons/* /tmp/.themes/* /tmp/icons/*
