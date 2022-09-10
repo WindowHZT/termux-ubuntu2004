@@ -442,7 +442,59 @@ _eclipse(){
 }
 
 
-#🍎🍎🍎🍎🍎wget -c https://wps-linux-personal.wpscdn.cn/wps/download/ep/Linux2019/11664/wps-office_11.1.0.11664_arm64.deb -O /opt/wps.deb
+
+_wps(){
+	_i(){
+		[ -e /opt/kingsoft ] && echo "$red本机已安装有WPS，如想重新安装，请先卸载一遍$white";enter;return
+		msg $red "安装WPS（本次下载可以不用加速器！）"
+		echo -e "\n$green请保持网络通畅$white"
+		sudo apt install libglu1-mesa bsdmainutils xdg-utils libxslt-dev libxml2-dev python3-pyqt5 ttf-mscorefonts-installer -y
+		wget -c https://wps-linux-personal.wpscdn.cn/wps/download/ep/Linux2019/11664/wps-office_11.1.0.11664_arm64.deb -O /opt/wps.deb
+		[ "$?" == "0" ]&& rm -rf "/usr/share/mime/packages/custom-wps-office.xml"&&sudo dpkg -i  /opt/wps.deb
+		
+		wget -c https://gitee.com/ak2/ttf-wps-fonts/raw/master/ttf-wps-fonts.tar.xz -O /opt/ttf.tar.xz
+		tar -Jxvf ttf.tar.xz -C /
+		cd /usr/share/fonts/truetype/wps-fonts
+	    for i in mkfontscale mkfontdir fc-cache; do
+ 	       [[ ! $(command -v ${i}) ]] || ${i}
+  		done
+
+		msg $green "安装完毕～"
+		echo -e "\n\n\t$red如果因网络波动没有安装成功的，请卸载重装！$white"
+		enter
+	}
+	
+	_d(){
+		msg $red "卸载WPS"
+		
+		sudo dpkg -r wps-office
+		msg $green "卸载完毕～"
+		enter
+	}
+	
+	OPTIONS=(
+         1 "安装WPS"
+         2 "卸载WPS"
+         3 "取消")
+    
+    _dialog "首页→安装/卸载软件→WPS" "请选择" $OPTIONS
+
+	case $op in
+    	1)
+    		_i
+    		;;
+    	2)
+    		_d
+    		;;
+    	*)
+    		return
+    		;;
+	esac
+
+
+}
+
+
 
 _android-studio(){
 	_i(){
@@ -462,6 +514,11 @@ _android-studio(){
 		EOF
 		
 		chmod +x ~/Desktop/android.desktop
+		
+		##安装Java
+		msg $red "安装Java环境！"
+		sudo apt-get install  default-jre* -y
+
 		msg $green "安装完毕～"
 		echo -e "\n\n\t$red如果因网络波动没有安装成功的，请卸载重装！$white"
 		enter
@@ -592,8 +649,8 @@ _xrdp(){
 		
 		case $op in
 			1)
-				#rm -rf /var/run/xrdp/xrdp.pid
 				xrdp -k
+				rm -rf /var/run/xrdp/xrdp.pid
 				row=`cat /etc/xrdp/xrdp.ini | grep -n '; in sesman.ini. See and configure also sesman.ini.' | awk -F ":" '{print $1}'`
 				sed -i "$(($row+1)),`cat /etc/xrdp/xrdp.ini | wc -l`"d /etc/xrdp/xrdp.ini
 				
@@ -613,8 +670,8 @@ _xrdp(){
 				enter
 				;;
 			2)
-				#rm -rf /var/run/xrdp/xrdp.pid
 				xrdp -k
+				rm -rf /var/run/xrdp/xrdp.pid
 				row=`cat /etc/xrdp/xrdp.ini | grep -n '; in sesman.ini. See and configure also sesman.ini.' | awk -F ":" '{print $1}'`
 				sed -i "$(($row+1)),`cat /etc/xrdp/xrdp.ini | wc -l`"d /etc/xrdp/xrdp.ini
 				
@@ -697,8 +754,9 @@ _app(){
          4 "VSCode"
          5 "Eclipse"
          6 "Android Studio"
-         7 "QQ"
-         8 "取消")
+         7 "WPS office"
+         8 "QQ"
+         9 "取消")
 	
 	_dialog "首页→安装/卸载软件" "请选择" $OPTIONS
 
@@ -722,6 +780,9 @@ _app(){
     		_android-studio
     		;;
     	7)
+    		_wps
+    		;;    		
+    	8)
     		_qq
     		;;
     	*)
@@ -1092,15 +1153,15 @@ _clear(){
 	echo -e "\t|$green用户光标：$mouse_name$white"
 	
 	##清理背景图
-	cd /tmp/bg
+	cd /tmp/bg >/dev/null 2>&1
 	for x in `ls`
 	do
 		[ "$x" == "$bg_name" ]&&continue
-		sudo rm -rf /tmp/bg/$x
+		[ -e "/tmp/bg/$x" ]&&sudo rm -rf /tmp/bg/$x
 	done
 	
 	##清理主题
-	cd ~/.themes
+	cd ~/.themes >/dev/null 2>&1
 	for x in `ls -d */ | sed "s#/##g"`
 	do
 		[ "$x" == "$themes_name" ]&&continue
@@ -1109,7 +1170,7 @@ _clear(){
 	done
 
 	##清理图标
-	cd ~/.local/share/icons
+	cd ~/.local/share/icons >/dev/null 2>&1
 	for x in `ls -d */ | sed "s#/##g"`
 	do
 		[ "$x" == "$icons_name" ]&&continue
@@ -1118,7 +1179,7 @@ _clear(){
 	done
 		
 	##清理光标
-	cd ~/.icons 
+	cd ~/.icons  >/dev/null 2>&1
 	for x in `ls -d */ | sed "s#/##g"`
 	do
 		[ "$x" == "$mouse_name" ]&&continue
