@@ -453,7 +453,6 @@ _wps(){
 		fi
 		msg $red "安装WPS（本次下载可以不用加速器！）"
 		echo -e "\n$green请保持网络通畅$white"
-		sudo apt install libglu1-mesa bsdmainutils xdg-utils libxslt-dev libxml2-dev python3-pyqt5 ttf-mscorefonts-installer -y
 		wget -c https://wps-linux-personal.wpscdn.cn/wps/download/ep/Linux2019/11664/wps-office_11.1.0.11664_arm64.deb -O /opt/wps.deb
 		[ "$?" == "0" ]&& rm -rf "/usr/share/mime/packages/custom-wps-office.xml"&&sudo dpkg -i  /opt/wps.deb
 		
@@ -461,7 +460,7 @@ _wps(){
 		tar -Jxvf ttf.tar.xz -C /
 		cd /usr/share/fonts/truetype/wps-fonts
 	    for i in mkfontscale mkfontdir fc-cache; do
- 	       [[ ! $(command -v ${i}) ]] || ${i}
+ 	       [[ ! $(command -v ${i}) ]] ||sudo  ${i}
   		done
 
 		msg $green "安装完毕～"
