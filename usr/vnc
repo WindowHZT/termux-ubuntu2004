@@ -189,12 +189,24 @@ _xfce(){
 	dbus-launch --exit-with-session startxfce4 &
 	EOF
 	
-	sudo apt install fonts-wqy-microhei  libglu1-mesa bsdmainutils xdg-utils libxslt-dev libxml2-dev python3-pyqt5 ttf-mscorefonts-installer language-selector-gnome at-spi2-core -y  
+	sudo apt install fonts-wqy-microhei  libglu1-mesa bsdmainutils xdg-utils libxslt-dev libxml2-dev python3-pyqt5 ttf-mscorefonts-installer -y  # language-selector-gnome at-spi2-core 
 	sudo chmod u+s /usr/lib/dbus-1.0/dbus-daemon-launch-helper
-	sudo apt-get install $(check-language-support) -y
+	#sudo apt-get install $(check-language-support) -y
 	
 	echo "export DISPLAY=\":1\"" >> /etc/profile
 	source /etc/profile
+	
+	[ -z "`dpkg -l | grep fonts-wqy-microhei`" ]&&sudo apt-get install fonts-wqy-microhei -y
+	[ ! -z "`cat /etc/locale.gen|grep '# zh_CN.UTF-8 UTF-8'`" ]&&sed -i "s/# zh_CN.UTF-8 UTF-8/ zh_CN.UTF-8 UTF-8/g" /etc/locale.gen
+	locale-gen
+	echo "export LC_ALL=zh_CN.UTF-8" >> ~/.bashrc
+	
+	cat <<-EOF>>~/.bashrc
+	if [ "\$TERM"="linux" ] ;then 
+		export LANGUAGE=en_US 
+	fi 
+	EOF
+		
 }
 
 

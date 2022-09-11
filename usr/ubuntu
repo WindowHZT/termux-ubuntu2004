@@ -462,7 +462,11 @@ _wps(){
 	    for i in mkfontscale mkfontdir fc-cache; do
  	       [[ ! $(command -v ${i}) ]] ||sudo  ${i}
   		done
-
+		
+		sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/wps
+		sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/wpspdf
+		sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/et
+		sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/wpp
 		msg $green "安装完毕～"
 		echo -e "\n\n\t$red如果因网络波动没有安装成功的，请卸载重装！$white"
 		enter
@@ -1054,38 +1058,22 @@ _theme(){
 _language(){
 	_en(){
 		msg $green "更换为英语"
-		sed -i "s#export LC_ALL=zh_CN.UTF-8##g" ~/.bashrc
-		echo -e "$red\n\n\t此操作仅会删除 .bashrc 里面的 export LC_ALL=zh_CN.UTF-8$white"
-		echo -e "$red\n\n\t重启后生效！$white"
+		sed -i "s/export LANGUAGE=zh_CN.UTF-8/export LANGUAGE=en_US/g" ~/.bashrc
+		echo -e "$red\n\n\t配置完成！$white"
 		enter
 	}
 	
 	_zh(){
 		msg $green "更换为中文"
-		[ -z "`dpkg -l | grep fonts-wqy-microhei`" ]&&sudo apt-get install fonts-wqy-microhei -y
-		[ ! -z "`cat /etc/locale.gen|grep '# zh_CN.UTF-8 UTF-8'`" ]&&sed -i "s/# zh_CN.UTF-8 UTF-8/ zh_CN.UTF-8 UTF-8/g" /etc/locale.gen
-		locale-gen
-		
-		[ -z "`cat ~/.bashrc |grep  'export LC_ALL=zh_CN.UTF-8'`" ]&&echo "export LC_ALL=zh_CN.UTF-8" >> ~/.bashrc
-		if [[ "`cat ~/.bashrc`" =~ 'if [ "$TERM"="linux" ] ;then ' ]]; then
-			echo 'string exist'
-		else
-		    cat <<-EOF>>~/.bashrc
-			if [ "\$TERM"="linux" ] ;then 
-				export LANGUAGE=en_US 
-			fi 
-			EOF
-		
-		fi
-		
-		echo -e "$red\n\n\t重启后生效！$white"
+		sed -i "s/export LANGUAGE=en_US/export LANGUAGE=zh_CN.UTF-8/g" ~/.bashrc
+		echo -e "$red\n\n\t配置完成！$white"
 		enter
 	}
 	
 	
 		OPTIONS=(
-			1 "英文"   
-			2 "中文"    
+			1 "英文（仅终端+设置生效）"   
+			2 "中文（仅终端+设置生效）"    
 			3 "取消")
 
     _dialog "首页→更换语言" "请选择" $OPTIONS
@@ -1224,8 +1212,7 @@ _Main(){
          6 "版本信息"
          7 "更新ubuntu脚本"
          8 "清理垃圾"
-         9 "关机～"
-         10 "退出")
+         9 "退出脚本")
     
     _dialog "首页" "使用↑↓选择，也可以用手点击选项再回车哦" $OPTIONS
 	
@@ -1262,9 +1249,6 @@ _Main(){
     	8)
     		_clear
     		;;
-    	9)
-    		logout
-    		;;
     	*)
     		clear
     		export s=1
@@ -1282,6 +1266,7 @@ do
 done
 
 
+		
 
 
 
