@@ -328,5 +328,6 @@ chmod +x $folder/root/.profile
 chmod 770 $folder/usr/local/bin/*
 
 echo "APT::Acquire::Retries \"3\";" > $folder/etc/apt/apt.conf.d/80-retries 
+cd ~ && echo "./$bin" > .bash_profile
 msg $red "首次启动系统～"
 bash $bin
