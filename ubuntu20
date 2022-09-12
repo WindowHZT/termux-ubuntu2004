@@ -329,5 +329,17 @@ chmod 770 $folder/usr/local/bin/*
 
 echo "APT::Acquire::Retries \"3\";" > $folder/etc/apt/apt.conf.d/80-retries 
 cd ~ && echo "./$bin" > .bash_profile
+
+cat <<-EOF > .bash_profile
+echo -e "\t\t**************"
+echo -e "\t\t\e[32;1m1.直接按回车  （启动ubuntu系统）\e[0m"
+echo -e "\t\t\e[32;1m2.任意键或超时（不启动ubuntu系统）\e[0m"
+echo -e "\t\t**************"
+echo -ne "\e[31;1m请在5s内输入：\e[0m"
+read -t 5 op
+[ ! "\$?" == "0" ]&&exit
+[ "\$op" == "" ]&& ./$bin
+EOF
+
 msg $red "首次启动系统～"
 bash $bin
