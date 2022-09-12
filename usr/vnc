@@ -173,7 +173,7 @@ _xfce(){
 	sudo apt-mark hold udisks2
 	sudo apt install keyboard-configuration -y
 	sudo apt install tzdata -y
-	sudo apt install sudo wget nano inetutils-tools dialog -y
+	sudo apt install sudo wget nano inetutils-tools dialog bc -y
 	sudo apt install xfce4 xfce4-goodies xfce4-terminal exo-utils tigervnc-standalone-server tigervnc-common dbus-x11 ffmpeg  language-pack-en --no-install-recommends -y
 	#sudo apt --fix-broken install
 	sudo apt clean git -y
@@ -210,7 +210,7 @@ _xfce(){
 	locale-gen
 	echo "export LC_ALL=zh_CN.UTF-8" >> ~/.bashrc
 	
-	cat <<-EOF>>~/.bashrc
+	cat <<-EOF>> ~/.bashrc
 	if [ "\$TERM"="linux" ] ;then 
 		export LANGUAGE=en_US 
 	fi 
@@ -236,11 +236,11 @@ if [ ! -e $CONFIG  ];then
 	##设置状态栏大小
 	xfconf-query -c xfce4-panel -np '/panels/panel-1/icon-size' -t 'int' -s 20
 	##设置plank面板图标大小
-	xfconf-query -c xfce4-panel -np '/panels/panel-2/size' -t 'int' -s 60
+	xfconf-query -c xfce4-panel -np '/panels/panel-2/size' -t 'int' -s 100
 	##设置字体大小
-	xfconf-query -c xsettings -np '/Xft/DPI' -t 'int' -s 135
+	xfconf-query -c xsettings -np '/Xft/DPI' -t 'int' -s 200
 	##设置桌面图标大小
-	xfconf-query -c xfce4-desktop -np '/desktop-icons/icon-size' -t 'int' -s 65
+	xfconf-query -c xfce4-desktop -np '/desktop-icons/icon-size' -t 'int' -s 100
 	
 	startTime=`cat /data/data/com.termux/files/home/Time`
 	rm -rf /data/data/com.termux/files/home/Time
