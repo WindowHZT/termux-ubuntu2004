@@ -319,7 +319,7 @@ touch $folder/root/.hushlogin
 	EOF
 
 chmod +x $tarball
-for x in user vnc ubuntu
+for x in user vnc ubuntu software
 do
 	wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/$x" -O "$cur/$folder/usr/local/bin/$x"
 done
@@ -337,8 +337,7 @@ echo -e "\t\t\e[32;1m2.任意键或超时（不启动ubuntu系统）\e[0m"
 echo -e "\t\t**************"
 echo -ne "\e[31;1m请在5s内输入：\e[0m"
 read -t 5 op
-[ ! "\$?" == "0" ]&&exit
-[ "\$op" == "" ]&& ./$bin
+[ "\$?" == "0" ] && [ "\$op" == "" ]&& ./$bin
 EOF
 
 msg $red "首次启动系统～"
