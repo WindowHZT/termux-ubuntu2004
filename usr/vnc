@@ -32,15 +32,19 @@ _login(){
 	echo
 }
 
+
 _start(){
-	[ ! -e "/data/data/com.termux/files/home/storage/shared/MTS" ]&&mkdir /data/data/com.termux/files/home/storage/shared/MTS
-	[ ! -L "`echo ~/Desktop/MTS`" ]&&ln -s /data/data/com.termux/files/home/storage/shared/MTS ~/Desktop/
+	[ ! -e "/data/data/com.termux/files/home/storage/shared/swap" ]&&mkdir /data/data/com.termux/files/home/storage/shared/swap
+	[ ! -e "`echo ~/Desktop/MTS`" ]&&mkdir ~/Desktop/MTS
+	[ ! -L "`echo ~/Desktop/MTS/swap`" ]&&ln -s /data/data/com.termux/files/home/storage/shared/swap ~/Desktop/MTS
+	[ ! -L "`echo ~/Desktop/MTS/Download`" ]&&ln -s /data/data/com.termux/files/home/storage/shared/Download ~/Desktop/MTS
+	#[ ! -L "`echo ~/Desktop/MTS/QQfile_recv`" ]&&ln -s /data/data/com.termux/files/home/storage/shared/Android/data/com.tencent.mobileqq/Tencent/QQfile_recv ~/Desktop/MTS
 	if [ ! -e "`echo ~/Desktop/MTS/说明.txt`" ];then
 		touch ~/Desktop/MTS/说明.txt
 		cat <<-EOF >~/Desktop/MTS/说明.txt
 		PS：1.这个MTS目录是连接到手机存储目录的交换区。
 			 2.方便非Root用户存取文件，和交换文件。
-			 3.每一次开机都会自动创建这个目录，不用担心它被删除。（即使删了下次开机时也会恢复）
+			 3.每一次开机都会自动创建这个目录，不用担心它被删除。
 			 
 		使用方法：step1.在你手机自带的文件管理器找到 MTS 这个目录。
 				   step2.把你下载的刘德华最新歌曲mp3文件，复制一份到这个目录。
@@ -50,6 +54,11 @@ _start(){
 			  件管理器就可以轻松获取到你的办公文件了
 			  
 		优点：解决了虚拟机与物理机文件交换繁杂的问题。
+		
+		待改进：解除安卓11系统限制访问data文件夹
+		
+		手机QQ接收的文件在下面这个目录
+		/storage/emulated/0/Android/data/com.tencent.mobileqq/Tencent/QQfile_recv/
 		EOF
 	fi
 	

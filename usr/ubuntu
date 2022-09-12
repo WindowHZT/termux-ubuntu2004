@@ -13,791 +13,6 @@ enter() { echo -en "\n\n$green按回车继续$white";read op ;:;}  ##
 s=0
 
 
-##🍎
-_chromium(){
-	_i(){
-		msg $red "安装Chromium浏览器"
-		sudo apt-get install apt-utils -y
-		sudo apt purge chromium* chromium-browser* snapd -y -qq 
-		sudo apt autoremove -y -qq
-		sudo apt purge chromium* chromium-browser* -y -qq 
-		sudo apt autoremove -y -qq
-		sudo apt update -qq
-		sudo apt install software-properties-common gnupg --no-install-recommends -y -qq
-		echo "deb http://ftp.debian.org/debian buster main
-		deb http://ftp.debian.org/debian buster-updates main" >> /etc/apt/sources.list
-
-		apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DCC9EFBF77E11517
-		apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138
-		apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AA8E81B4331F7F50
-		apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A
-
-		sudo apt update -y
-		sudo apt install chromium -y
-		sed -i 's/chromium %U/chromium --no-sandbox --test-type %U/g' /usr/share/applications/chromium.desktop
-		
-		cat <<-EOF > ~/Desktop/chromium.desktop
-		[Desktop Entry]
-		Version=1.0
-		Name=Chromium Web Browser
-		Exec=/usr/bin/chromium --no-sandbox --test-type %U
-		Terminal=false
-		X-MultipleArgs=false
-		Type=Application
-		Icon=chromium
-		Categories=Network;WebBrowser;
-		MimeType=text/html;text/xml;application/xhtml_xml;application/x-mimearchive;x-scheme-handler/http;x-scheme-handler/https;
-		StartupWMClass=chromium
-		StartupNotify=true
-		EOF
-		
-		chmod +x  ~/Desktop/chromium.desktop
-		msg $green "安装完毕～"
-		enter
-	}
-	
-	_d(){
-		msg $red "卸载Chromium浏览器"
-		sudo apt purge chromium* chromium-browser* snapd -y -qq 
-		sudo apt autoremove -y -qq
-		rm -rf ~/Desktop/chromium.desktop
-		
-		msg $green "卸载完毕～"
-		enter
-	}
-	
-	OPTIONS=(
-         1 "安装Chromium浏览器"
-         2 "卸载Chromium浏览器"
-         3 "取消")
-    
-    _dialog "首页→安装/卸载软件→Chromium浏览器" "请选择" $OPTIONS
-
-	case $op in
-    	1)
-    		_i
-    		;;
-    	2)
-    		_d
-    		;;
-    	*)
-    		return
-    		;;
-	esac
-}
-
-##🍎
-_firefox(){
-	_i(){
-		##把火狐更到最新版
-		msg $red "安装firefox浏览器"
-		sudo apt update -y
-		sudo apt upgrade -y
-		sudo apt purge firefox -y
-		#apt install gnupg gnupg2 gnupg1 software-properties-common plank -y
-		sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A6DCF7707EBC211F	
-		sudo apt-add-repository "deb http://ppa.launchpad.net/ubuntu-mozilla-security/ppa/ubuntu bionic main"
-		sudo apt update -y
-		sudo apt install firefox -y
-		
-		cat <<-EOF > ~/Desktop/firefox.desktop
-		[Desktop Entry]
-		Name=firefox
-		Comment=firefox
-		Exec=/usr/lib/firefox/firefox
-		Icon=/usr/lib/firefox/browser/chrome/icons/default/default128.png
-		Terminal=false
-		Type=Application
-		Categories=Application;
-		Encoding=UTF-8
-		StartupNotify=true
-		EOF
-		
-		chmod +x ~/Desktop/firefox.desktop
-		msg $green "安装完毕～"
-		echo -e "\n\n\t$red注意：由于火狐的兼容性，可能会导致浏览器崩溃的情况$white"
-		echo -e "\t$red解决方法：打开火狐在地址栏输入 about:config 回车，然后接受风险告知(Accept the risk and continue)$white"
-		echo -e "\t$red然后在小搜索栏里面输入 sandbox $white"
-		echo -e "\t$red把 media.cubeb.sandbox 的值改为 false$white"
-		echo -e "\t$red把 security.sandbox.content.level 的值改成 0$white"
-		enter
-		echo -e "$red这将会导致你的浏览器无法使用，请你截图或记住解决方案！$white"
-		enter
-	}
-	
-	_d(){
-		msg $red "卸载firefox浏览器"
-		sudo apt purge firefox -y 
-		rm -rf ~/Desktop/firefox.desktop
-		
-		msg $green "卸载完毕～"
-		enter
-	}
-	
-	OPTIONS=(
-         1 "安装firefox浏览器"
-         2 "卸载firefox浏览器"
-         3 "取消")
-    
-    _dialog "首页→安装/卸载软件→火狐firefox浏览器" "请选择" $OPTIONS
-
-	case $op in
-    	1)
-    		_i
-    		;;
-    	2)
-    		_d
-    		;;
-    	*)
-    		return
-    		;;
-	esac
-
-}
-
-##🍎
-_idea(){
-	_i(){
-		cd /opt
-		if [ "$1" == "1" ];then
-			if [ -d /opt/ideaIC ];then
-				OPTIONS=(
-	        	1 "是"
-        		2 "否")
-        		
-    			_dialog "首页→安装软件→IntelliJ IDEA" "检测到你之前已经安装过ideaIC版，是否卸载重装？" $OPTIONS
-				case $op in
-    				1)
-			    		rm -rf /opt/ideaIC
-   				 		;;
-			    	*)
-			    		return
-			    		;;
-				esac
-			fi
-
-			msg $red "安装IntelliJ IDEA免费版"
-			echo -e "\n$green请保持网络通畅（本次下载可以不用加速器！）$white"
-			##免费版
-			wget -c https://download-cdn.jetbrains.com/idea/ideaIC-2022.2.tar.gz
-			[ "$?" == "0" ] && mkdir /opt/ideaIC && tar -zxvf /opt/ideaIC-2022.2.tar.gz -C /opt/ideaIC --strip-components 1
-
-			##创建桌面图标
-			cat <<-EOF> ~/Desktop/ideaIC.desktop
-			[Desktop Entry]
-			Name=IntelliJ IDEA
-			Comment=IntelliJ IDEA
-			Exec=/opt/ideaIC/bin/idea.sh
-			Icon=/opt/ideaIC/bin/idea.png
-			Terminal=false
-			Type=Application
-			Categoories=Developer;
-			EOF
-			
-			chmod +x /opt/ideaIC/bin/idea.sh
-			chmod u+x ~/Desktop/ideaIC.desktop
-		else
-			if [ -d /opt/ideaIU ];then
-				OPTIONS=(
-	        	1 "是"
-        		2 "否")
-        		
-    			_dialog "首页→安装软件→IntelliJ IDEA" "检测到你之前已经安装过ideaIU版，是否卸载重装？" $OPTIONS
-				case $op in
-    				1)
-			    		rm -rf /opt/ideaIU
-   				 		;;
-			    	*)
-			    		return
-			    		;;
-				esac
-			fi
-			msg $red "安装IntelliJ IDEA付费版"
-			echo -e "\n$green请保持网络通畅（本次下载可以不用加速器！）$white"
-			##付费版
-			wget -c https://download-cdn.jetbrains.com/idea/ideaIU-2022.2.tar.gz 
-			[ "$?" == "0" ] && mkdir /opt/ideaIU && tar -zxvf /opt/ideaIU-2022.2.tar.gz -C /opt/ideaIU --strip-components 1
-			
-			##创建桌面图标
-			cat <<-EOF> ~/Desktop/ideaIU.desktop
-			[Desktop Entry]
-			Name=IntelliJ IDEA
-			Comment=IntelliJ IDEA
-			Exec=/opt/ideaIU/bin/idea.sh
-			Icon=/opt/ideaIU/bin/idea.png
-			Terminal=false
-			Type=Application
-			Categoories=Developer;
-			EOF
-			
-			chmod +x /opt/ideaIU/bin/idea.sh
-			chmod u+x ~/Desktop/ideaIU.desktop
-		fi
-		
-		
-		##安装Java
-		msg $red "安装Java环境！"
-		sudo apt-get install  default-jre* -y
-		
-		cd ~
-		msg $green "安装完毕～"
-		echo -e "\n\n\t$red如果因网络波动没有安装成功的，请卸载重装！$white"
-		enter
-	}
-	
-	_d(){
-		if [ "$1" == 1 ];then
-			msg $red "卸载IntelliJ IDEA免费版"
-			rm -rf /opt/ideaIC ~/Desktop/ideaIC.desktop
-		else
-			msg $red "卸载IntelliJ IDEA付费版"
-			rm -rf /opt/ideaIU ~/Desktop/ideaIU.desktop
-		fi
-		
-		msg $green "卸载完毕～"
-		enter
-	}
-	
-	OPTIONS=(
-         1 "安装IntelliJ IDEA"
-         2 "卸载IntelliJ IDEA"
-         3 "取消")
-    
-    _dialog "首页→安装/卸载软件→IntelliJ IDEA 2022.2版本" "请选择" $OPTIONS
-
-	case $op in
-    	1)
-    		OPTIONS=(
-	        1 "社区版IC_免费"
- 	        2 "企业版IU_付费"
-  		    3 "取消")
-			
-			_dialog "首页→安装软件→IntelliJ IDEA" "请选择" $OPTIONS
-			
-			case $op in
-		    	1)
-  			  		_i 1
-    				;;
-		    	2)
-		    		_i 2
- 			  		;;
-    			*)
-    				return
-	    		;;
-			esac
-    		;;
-    	2)
-    		OPTIONS=(
-	        1 "社区版IC_免费"
- 	        2 "企业版IU_付费"
-  		    3 "取消")
-			
-			_dialog "首页→卸载软件→IntelliJ IDEA" "请选择" $OPTIONS
-			
-			case $op in
-		    	1)
-  			  		_d 1
-    				;;
-		    	2)
-		    		_d 2
- 			  		;;
-    			*)
-    				return
-	    			;;
-			esac
-    		;;
-    	*)
-    		return
-    		;;
-	esac
-}
-
-_vscode(){
-	
-	
-	
-	_i(){
-		msg $red "安装Visual Studio Code"
-		wget -c https://az764295.vo.msecnd.net/stable/784b0177c56c607789f9638da7b6bf3230d47a8c/code_1.71.0-1662017130_arm64.deb -O ~/Downloads/VScode.deb
-		sudo dpkg -i ~/Downloads/VScode.deb
-		sudo apt --fix-broken install -y
-		
-		cat<<-EOF > ~/Desktop/VScode.desktop
-		[Desktop Entry]
-		Name=Visual Studio Code
-		Comment=Multi-platform code editor for Linux
-		Exec=/usr/share/code/bin/code --user-data-dir=~/.vscode --no-sandbox .
-		Icon=/usr/share/code/resources/app/resources/linux/code.png
-		Type=Application
-		StartupNotify=true
-		Categories=TextEditor;Development;Utility;
-		MimeType=text/plain;
-		EOF
-
-		chmod +x ~/Desktop/VScode.desktop
-		sed -i 's#Exec=/usr/share/code/code --unity-launch %F#Exec=/usr/share/code/bin/code --user-data-dir=~/.vscode --no-sandbox .#g' /usr/share/applications/code.desktop
-		msg $green "安装完毕～"
-		echo -e "\n\n\t$red如果因网络波动没有安装成功的，请卸载重装！$white"
-		enter
-	}
-	
-	_d(){
-		msg $red "卸载Visual Studio Code"
-		sudo dpkg -r code
-		
-		rm -rf ~/Desktop/VScode.desktop
-		msg $green "卸载完毕～"
-		enter
-	}
-	
-	OPTIONS=(
-         1 "安装Visual Studio Code"
-         2 "卸载Visual Studio Code"
-         3 "取消")
-    
-    _dialog "首页→安装/卸载软件→Visual Studio Code" "请选择" $OPTIONS
-
-	case $op in
-    	1)
-    		_i
-    		;;
-    	2)
-    		_d
-    		;;
-    	*)
-    		return
-    		;;
-	esac
-
-
-}
-
-_eclipse(){
-	
-	_i(){
-		case `dpkg --print-architecture` in
-		arm64 | aarch64)
-			#archurl="arm64"
-			msg $red "检测到你的系统构架为arm64，开始安装Eclipse"
-			wget -c https://mirrors.nju.edu.cn/eclipse//technology/epp/downloads/release/2022-06/R/eclipse-java-2022-06-R-linux-gtk-aarch64.tar.gz -O /opt/eclipse.tar.gz
-			;;
-		x86_64 | amd64)
-			#archurl="amd64"
-			msg $red "检测到你的系统构架为amd64，开始安装Eclipse"
-			wget -c https://mirrors.neusoft.edu.cn/eclipse/oomph/epp/2022-06/R/eclipse-inst-jre-linux64.tar.gz -O /opt/eclipse.tar.gz
-			;;	
-		*)
-			echo "未知构架，无法安装！";enter; return ;;
-		esac
-		
-		tar -zxvf /opt/eclipse.tar.gz -C /opt/
-		
-		cat<<-EOF > ~/Desktop/eclipse.desktop
-		[Desktop Entry]
-		Enncooding=UTF-8
-		Name=eclipse
-		Comment=Eclipse
-		Exec=/opt/eclipse/eclipse
-		Icon=/opt/eclipse/icon.xpm
-		Terminal=false
-		StartupNotify=true
-		Type=Application
-		Categories=Application;Development;
-		EOF
-
-		chmod +x ~/Desktop/eclipse.desktop
-		msg $green "安装完毕～"
-		echo -e "\n\n\t$red如果因网络波动没有安装成功的，请卸载重装！$white"
-		enter
-	}
-	
-	_d(){
-		msg $red "卸载Eclipse"
-		
-		rm -rf ~/Desktop/eclipse.desktop /opt/eclipse
-		msg $green "卸载完毕～"
-		enter
-	}
-	
-	OPTIONS=(
-         1 "安装Eclipse"
-         2 "卸载Eclipse"
-         3 "取消")
-    
-    _dialog "首页→安装/卸载软件→Eclipse" "请选择" $OPTIONS
-
-	case $op in
-    	1)
-    		_i
-    		;;
-    	2)
-    		_d
-    		;;
-    	*)
-    		return
-    		;;
-	esac
-
-
-}
-
-
-
-_wps(){
-	_i(){
-		if [ -d "/opt/kingsoft" ];then
-			clear
-			echo -e "$red本机已安装有WPS，如想重新安装，请先卸载一遍$white"
-			enter
-			return
-		fi
-		msg $red "安装WPS（本次下载可以不用加速器！）"
-		echo -e "\n$green请保持网络通畅$white"
-		wget -c https://wps-linux-personal.wpscdn.cn/wps/download/ep/Linux2019/11664/wps-office_11.1.0.11664_arm64.deb -O /opt/wps.deb
-		[ "$?" == "0" ]&& rm -rf "/usr/share/mime/packages/custom-wps-office.xml"&&sudo dpkg -i  /opt/wps.deb
-		
-		wget -c https://gitee.com/ak2/ttf-wps-fonts/raw/master/ttf-wps-fonts.tar.xz -O /opt/ttf.tar.xz
-		tar -Jxvf ttf.tar.xz -C /
-		cd /usr/share/fonts/truetype/wps-fonts
-	    for i in mkfontscale mkfontdir fc-cache; do
- 	       [[ ! $(command -v ${i}) ]] ||sudo  ${i}
-  		done
-		
-		sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/wps
-		sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/wpspdf
-		sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/et
-		sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/wpp
-		msg $green "安装完毕～"
-		echo -e "\n\n\t$red如果因网络波动没有安装成功的，请卸载重装！$white"
-		enter
-	}
-	
-	_d(){
-		msg $red "卸载WPS"
-		
-		sudo dpkg -r wps-office
-		msg $green "卸载完毕～"
-		enter
-	}
-	
-	OPTIONS=(
-         1 "安装WPS"
-         2 "卸载WPS"
-         3 "取消")
-    
-    _dialog "首页→安装/卸载软件→WPS" "请选择" $OPTIONS
-
-	case $op in
-    	1)
-    		_i
-    		;;
-    	2)
-    		_d
-    		;;
-    	*)
-    		return
-    		;;
-	esac
-
-
-}
-
-
-
-_android-studio(){
-	_i(){
-		msg $red "安装Android Studio（本次下载可以不用加速器！）"
-		echo -e "\n$green请保持网络通畅$white"
-		wget -c https://r3---sn-j5o76n7z.gvt1.com/edgedl/android/studio/ide-zips/2021.2.1.16/android-studio-2021.2.1.16-linux.tar.gz -O /opt/android-studio.tar.gz
-		[ "$?" == "0" ] && mkdir /opt/android-studio && tar -zxvf /opt/android-studio.tar.gz -C /opt/android-studio --strip-components 1
-
-		cat <<-EOF > ~/Desktop/android.desktop
-		[Desktop Entry]
-		Name =Android Studio
-		comment= android studio
-		Exec=/opt/android-studio/bin/studio.sh
-		Icon=/opt/android-studio/bin/studio.png
-		Terminal=false
-		Type=Application
-		EOF
-		
-		chmod +x ~/Desktop/android.desktop
-		
-		##安装Java
-		msg $red "安装Java环境！"
-		sudo apt-get install  default-jre* -y
-
-		msg $green "安装完毕～"
-		echo -e "\n\n\t$red如果因网络波动没有安装成功的，请卸载重装！$white"
-		enter
-	}
-	
-	_d(){
-		msg $red "卸载Android studio"
-		
-		rm -rf ~/Desktop/android.desktop /opt/android-studio
-		msg $green "卸载完毕～"
-		enter
-	}
-	
-	OPTIONS=(
-         1 "安装Android Studio"
-         2 "卸载Android Studio"
-         3 "取消")
-    
-    _dialog "首页→安装/卸载软件→Android Studio" "请选择" $OPTIONS
-
-	case $op in
-    	1)
-    		_i
-    		;;
-    	2)
-    		_d
-    		;;
-    	*)
-    		return
-    		;;
-	esac
-
-}
-
-
-
-##🍎
-_xrdp(){
-
-	_i(){	
-		msg $red "安装xrdp DR远程桌面"
-		sudo apt install xrdp -y
-		sed -i '6{s/^/xfce4-session/}' /etc/X11/Xsession
-		echo xfce4-session >~/.xsession
-		
-		row=`cat /etc/xrdp/xrdp.ini | grep -n '; full path to bmp-file or file in shared folder' | awk -F ":" '{print $1}'`
-		sed -i "$(($row+1)),`cat /etc/xrdp/xrdp.ini | wc -l`"d /etc/xrdp/xrdp.ini
-		
-		cat <<-EOF>>/etc/xrdp/xrdp.ini
-		; full path to bmp-file or file in shared folder
-		ls_logo_filename=
-		ls_logo_x_pos=240
-		ls_logo_y_pos=50
-		
-		; for positioning labels such as username, password etc
-		ls_label_x_pos=170
-		ls_label_width=65
-		
-		; for positioning text and combo boxes next to above labels
-		ls_input_x_pos=240
-		ls_input_width=235
-		ls_input_height=100
-		
-		; y pos for first label and combo box
-		ls_input_y_pos=220
-		
-		; OK button
-		ls_btn_ok_x_pos=260
-		ls_btn_ok_y_pos=370
-		ls_btn_ok_width=85
-		ls_btn_ok_height=30
-		
-		; Cancel button
-		ls_btn_cancel_x_pos=350
-		ls_btn_cancel_y_pos=370
-		ls_btn_cancel_width=85
-		ls_btn_cancel_height=30
-		
-		[Logging]
-		LogFile=xrdp.log
-		LogLevel=DEBUG
-		EnableSyslog=true
-		SyslogLevel=DEBUG
-		; LogLevel and SysLogLevel could by any of: core, error, warning, info or debug
-		
-		[Channels]
-		; Channel names not listed here will be blocked by XRDP.
-		; You can block any channel by setting its value to false.
-		; IMPORTANT! All channels are not supported in all use
-		; cases even if you set all values to true.
-		; You can override these settings on each session type
-		; These settings are only used if allow_channels=true
-		rdpdr=true
-		rdpsnd=true
-		drdynvc=true
-		cliprdr=true
-		rail=true
-		xrdpvr=true
-		tcutils=true
-		
-		; for debugging xrdp, in section xrdp1, change port=5901 to this:
-		#port=/tmp/.xrdp/xrdp_display_10
-		
-		; for debugging xrdp, add following line to section xrdp1
-		#chansrvport=/tmp/.xrdp/xrdp_chansrv_socket_7210
-		
-		
-		;
-		; Session types
-		;
-		
-		; Some session types such as Xorg, X11rdp and Xvnc start a display server.
-		; Startup command-line parameters for the display server are configured
-		; in sesman.ini. See and configure also sesman.ini.
-		EOF
-	
-		msg $green "安装完毕～"
-		enter
-	}
-	
-	_start(){
-		OPTIONS=(
-	         1 "［Xvnc模式］"
-	         2 "［Xorg模式］"
-	         3 "取消")
-	
-		_dialog "首页→xrdp→启动界面" "请选择" $OPTIONS
-		
-		case $op in
-			1)
-				xrdp -k
-				rm -rf /var/run/xrdp/xrdp.pid
-				row=`cat /etc/xrdp/xrdp.ini | grep -n '; in sesman.ini. See and configure also sesman.ini.' | awk -F ":" '{print $1}'`
-				sed -i "$(($row+1)),`cat /etc/xrdp/xrdp.ini | wc -l`"d /etc/xrdp/xrdp.ini
-				
-				cat <<-EOF>>/etc/xrdp/xrdp.ini
-				[Xvnc]
-				name=Xvnc
-				lib=libvnc.so
-				username=ask
-				password=ask
-				ip=127.0.0.1
-				port=5901
-				#xserverbpp=24
-				#delay_ms=2000
-				EOF
-				
-				xrdp
-				enter
-				;;
-			2)
-				xrdp -k
-				rm -rf /var/run/xrdp/xrdp.pid
-				row=`cat /etc/xrdp/xrdp.ini | grep -n '; in sesman.ini. See and configure also sesman.ini.' | awk -F ":" '{print $1}'`
-				sed -i "$(($row+1)),`cat /etc/xrdp/xrdp.ini | wc -l`"d /etc/xrdp/xrdp.ini
-				
-				cat <<-EOF>>/etc/xrdp/xrdp.ini
-				[Xorg]
-				name=Xorg
-				lib=libxup.so
-				username=ask
-				password=ask
-				ip=127.0.0.1
-				port=5901
-				code=20
-				EOF
-				
-				xrdp
-				enter
-				;;
-			*)
-				return
-				;;
-		esac
-	}
-		
-		
-
-	
-	_d(){
-		msg $red "卸载xrdp DR远程桌面"
-		sudo apt purge xrdp -y
-		msg $green "卸载完毕～"
-		enter
-	}
-	
-	OPTIONS=(
-         1 "启动xrdp"
-         2 "安装xrdp DR远程桌面"
-         3 "卸载xrdp DR远程桌面"
-         4 "取消")
-    
-    _dialog "首页→xrdp DR远程桌面" "请选择" $OPTIONS
-
-	case $op in
-    	1)
-    		if [ -z "`dpkg -l | grep xrdp`" ];then
-    			echo -e "$red请先安装xrdp！$white"
-    			enter
-    			return
-    		else
-    			_start
-    		fi
-    		;;
-    	2)
-    		_i
-    		;;
-    	3)
-    		_d
-    		;;
-    	*)
-    		return
-    		;;
-	esac
-}
-
-
-##🍎
-_qq(){
-	msg $red "听说你想安装QQ？"
-	echo -en "$green老老实实用手机QQ叭……你还嫌内存用不完吗？$white"
-	enter
-}
-
-
-
-##安装/卸载软件🍎
-_app(){
-	OPTIONS=(
-         1 "Cchromium浏览器"
-         2 "火狐firefox浏览器"
-         3 "IntelliJ IDEA"
-         4 "VSCode"
-         5 "Eclipse"
-         6 "Android Studio"
-         7 "WPS office"
-         8 "QQ"
-         9 "取消")
-	
-	_dialog "首页→安装/卸载软件" "请选择" $OPTIONS
-
-	case $op in
-    	1)
-    		_chromium
-    		;;
-    	2)
-    		_firefox
-    		;;
-    	3)
-    		_idea
-    		;;
-    	4)
-    		_vscode
-    		;;
-    	5)
-    		_eclipse
-    		;;
-    	6)
-    		_android-studio
-    		;;
-    	7)
-    		_wps
-    		;;    		
-    	8)
-    		_qq
-    		;;
-    	*)
-    		return
-    	;;
-	esac
-}
 
 ##主题-------------------------------------------------------工作区---------------------------------------------------------------------------------------------------------
 _theme(){
@@ -1091,6 +306,187 @@ _language(){
 	esac   
 }
 
+
+_xrdp(){
+
+	_i(){	
+		msg $red "安装xrdp DR远程桌面"
+		sudo apt install xrdp -y
+		sed -i '6{s/^/xfce4-session/}' /etc/X11/Xsession
+		echo xfce4-session >~/.xsession
+		
+		row=`cat /etc/xrdp/xrdp.ini | grep -n '; full path to bmp-file or file in shared folder' | awk -F ":" '{print $1}'`
+		sed -i "$(($row+1)),`cat /etc/xrdp/xrdp.ini | wc -l`"d /etc/xrdp/xrdp.ini
+		
+		cat <<-EOF>>/etc/xrdp/xrdp.ini
+		; full path to bmp-file or file in shared folder
+		ls_logo_filename=
+		ls_logo_x_pos=240
+		ls_logo_y_pos=50
+		
+		; for positioning labels such as username, password etc
+		ls_label_x_pos=170
+		ls_label_width=65
+		
+		; for positioning text and combo boxes next to above labels
+		ls_input_x_pos=240
+		ls_input_width=235
+		ls_input_height=100
+		
+		; y pos for first label and combo box
+		ls_input_y_pos=220
+		
+		; OK button
+		ls_btn_ok_x_pos=260
+		ls_btn_ok_y_pos=370
+		ls_btn_ok_width=85
+		ls_btn_ok_height=30
+		
+		; Cancel button
+		ls_btn_cancel_x_pos=350
+		ls_btn_cancel_y_pos=370
+		ls_btn_cancel_width=85
+		ls_btn_cancel_height=30
+		
+		[Logging]
+		LogFile=xrdp.log
+		LogLevel=DEBUG
+		EnableSyslog=true
+		SyslogLevel=DEBUG
+		; LogLevel and SysLogLevel could by any of: core, error, warning, info or debug
+		
+		[Channels]
+		; Channel names not listed here will be blocked by XRDP.
+		; You can block any channel by setting its value to false.
+		; IMPORTANT! All channels are not supported in all use
+		; cases even if you set all values to true.
+		; You can override these settings on each session type
+		; These settings are only used if allow_channels=true
+		rdpdr=true
+		rdpsnd=true
+		drdynvc=true
+		cliprdr=true
+		rail=true
+		xrdpvr=true
+		tcutils=true
+		
+		; for debugging xrdp, in section xrdp1, change port=5901 to this:
+		#port=/tmp/.xrdp/xrdp_display_10
+		
+		; for debugging xrdp, add following line to section xrdp1
+		#chansrvport=/tmp/.xrdp/xrdp_chansrv_socket_7210
+		
+		
+		;
+		; Session types
+		;
+		
+		; Some session types such as Xorg, X11rdp and Xvnc start a display server.
+		; Startup command-line parameters for the display server are configured
+		; in sesman.ini. See and configure also sesman.ini.
+		EOF
+	
+		msg $green "安装完毕～"
+		enter
+	}
+	
+	_start(){
+		OPTIONS=(
+	         1 "［Xvnc模式］"
+	         2 "［Xorg模式］"
+	         3 "取消")
+	
+		_dialog "首页→xrdp→启动界面" "请选择" $OPTIONS
+		
+		case $op in
+			1)
+				xrdp -k
+				rm -rf /var/run/xrdp/xrdp.pid
+				row=`cat /etc/xrdp/xrdp.ini | grep -n '; in sesman.ini. See and configure also sesman.ini.' | awk -F ":" '{print $1}'`
+				sed -i "$(($row+1)),`cat /etc/xrdp/xrdp.ini | wc -l`"d /etc/xrdp/xrdp.ini
+				
+				cat <<-EOF>>/etc/xrdp/xrdp.ini
+				[Xvnc]
+				name=Xvnc
+				lib=libvnc.so
+				username=ask
+				password=ask
+				ip=127.0.0.1
+				port=5901
+				#xserverbpp=24
+				#delay_ms=2000
+				EOF
+				
+				xrdp
+				enter
+				;;
+			2)
+				xrdp -k
+				rm -rf /var/run/xrdp/xrdp.pid
+				row=`cat /etc/xrdp/xrdp.ini | grep -n '; in sesman.ini. See and configure also sesman.ini.' | awk -F ":" '{print $1}'`
+				sed -i "$(($row+1)),`cat /etc/xrdp/xrdp.ini | wc -l`"d /etc/xrdp/xrdp.ini
+				
+				cat <<-EOF>>/etc/xrdp/xrdp.ini
+				[Xorg]
+				name=Xorg
+				lib=libxup.so
+				username=ask
+				password=ask
+				ip=127.0.0.1
+				port=5901
+				code=20
+				EOF
+				
+				xrdp
+				enter
+				;;
+			*)
+				return
+				;;
+		esac
+	}
+		
+		
+
+	
+	_d(){
+		msg $red "卸载xrdp DR远程桌面"
+		sudo apt purge xrdp -y
+		msg $green "卸载完毕～"
+		enter
+	}
+	
+	OPTIONS=(
+         1 "启动xrdp"
+         2 "安装xrdp DR远程桌面"
+         3 "卸载xrdp DR远程桌面"
+         4 "取消")
+    
+    _dialog "首页→xrdp DR远程桌面" "请选择" $OPTIONS
+
+	case $op in
+    	1)
+    		if [ -z "`dpkg -l | grep xrdp`" ];then
+    			echo -e "$red请先安装xrdp！$white"
+    			enter
+    			return
+    		else
+    			_start
+    		fi
+    		;;
+    	2)
+    		_i
+    		;;
+    	3)
+    		_d
+    		;;
+    	*)
+    		return
+    		;;
+	esac
+}
+
+
 ##终端美化
 _term(){
 	echo
@@ -1117,8 +513,14 @@ _update(){
 	enter
 	
 	wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/ubuntu" -O "/tmp/ubuntu"
+	wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/vnc" -O "/tmp/vnc"
+	wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/software" -O "/tmp/software"
 	mv /tmp/ubuntu /usr/local/bin/ubuntu
+	mv /tmp/vnc /usr/local/bin/vnc
+	mv /tmp/software /usr/local/bin/software
 	chmod +x /usr/local/bin/ubuntu
+	chmod +x /usr/local/bin/vnc
+	chmod +x /usr/local/bin/software
 	msg $green "更新完毕～"
 	enter
 	exit
@@ -1128,7 +530,9 @@ _clear(){
 	msg $red "这仅仅是清理脚本产生的垃圾，请悉知！"
 	enter
 	echo -e "$yellow清理安装包.$white"
-	rm -rf /opt/eclipse.tar.gz /opt/ideaIC-2022.2.tar.gz /opt/ideaIU-2022.2.tar.gz ~/Downloads/VScode.deb /opt/android-studio.tar.gz  /opt/ttf.tar.xz  /opt/wps.deb
+	df -hl > /tmp/df
+	firstdf=`sed -n 2p /tmp/df | awk '{print $5}' | sed "s#%##g"`
+	rm -rf /opt/*.tar.gz ~/Downloads/VScode.deb /opt/ttf.tar.xz  /opt/wps.deb
 	
 	echo -e "\n$yellow清理美化包..$white"	
 	rm -rf /tmp/.icons/* /tmp/.themes/* /tmp/icons/*
@@ -1145,42 +549,55 @@ _clear(){
 	echo -e "\t|$green用户光标：$mouse_name$white"
 	
 	##清理背景图
-	cd /tmp/bg >/dev/null 2>&1
-	for x in `ls`
-	do
-		[ "$x" == "$bg_name" ]&&continue
-		[ -e "/tmp/bg/$x" ]&&sudo rm -rf /tmp/bg/$x
-	done
+	if [ -d "/tmp/bg" ];then
+		cd /tmp/bg
+		for x in `ls`
+		do
+			[ "$x" == "$bg_name" ]&&continue
+			[ -e "/tmp/bg/$x" ]&&sudo rm -rf /tmp/bg/$x
+		done
+	fi
 	
 	##清理主题
-	cd ~/.themes >/dev/null 2>&1
-	for x in `ls -d */ | sed "s#/##g"`
-	do
-		[ "$x" == "$themes_name" ]&&continue
-		sudo rm -rf $x >/dev/null 2>&1
-		sudo rm -rf $x/ >/dev/null 2>&1
-	done
-
+	if [ -d ~/.themes ];then
+		cd ~/.themes 
+		for x in `ls -F | grep "/$" | sed "s#/##g"`
+		do
+			[ "$x" == "$themes_name" ]&&continue
+			sudo rm -rf $x >/dev/null 2>&1
+			sudo rm -rf $x/ >/dev/null 2>&1
+		done
+	fi
+	
 	##清理图标
-	cd ~/.local/share/icons >/dev/null 2>&1
-	for x in `ls -d */ | sed "s#/##g"`
-	do
-		[ "$x" == "$icons_name" ]&&continue
-		sudo rm -rf $x >/dev/null 2>&1
-		sudo rm -rf $x/ >/dev/null 2>&1
-	done
+	if [ -d ~/.local/share/icons ];then
+		cd ~/.local/share/icons
+		for x in `ls -F | grep "/$" | sed "s#/##g"`
+		do
+			[ "$x" == "$icons_name" ]&&continue
+			sudo rm -rf $x >/dev/null 2>&1
+			sudo rm -rf $x/ >/dev/null 2>&1
+		done
+	fi
 		
 	##清理光标
-	cd ~/.icons  >/dev/null 2>&1
-	for x in `ls -d */ | sed "s#/##g"`
-	do
-		[ "$x" == "$mouse_name" ]&&continue
-		sudo rm -rf $x >/dev/null 2>&1
-		sudo rm -rf $x/ >/dev/null 2>&1
-	done
+	if [ -d ~/.icons  ];then
+		cd ~/.icons 
+		for x in `ls -F | grep "/$" | sed "s#/##g"`
+		do
+			[ "$x" == "$mouse_name" ]&&continue
+			sudo rm -rf $x >/dev/null 2>&1
+			sudo rm -rf $x/ >/dev/null 2>&1
+		done
+	fi
 	
 	cd ~
+	df -hl > /tmp/df
+	enddf=`sed -n 2p /tmp/df | awk '{print $5}' | sed "s#%##g"`
+	reslut=`echo "(0.$firstdf-0.$enddf)*108" | bc`
+	echo -e "\n$yellow此次清理$reslut G垃圾文件$white"	
 	echo -e "\n$green清理完毕～....$white"
+	rm -rf /tmp/df
 	enter
 }
 
@@ -1218,6 +635,7 @@ _Main(){
 	
     case $op in 
     	1)
+    		source $(dirname $0)/software
     		_app
     		;;
     	2)
@@ -1240,8 +658,8 @@ _Main(){
 			lsb_release -a
 			echo -e "$green----------------磁盘-----------------$white"
 			df -hl
+			enter
 			_other
-    		enter
     		;;
     	7)
     		_update
