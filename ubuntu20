@@ -337,7 +337,11 @@ echo -e "\t\t\e[32;1m2.任意键或超时（不启动ubuntu系统）\e[0m"
 echo -e "\t\t**************"
 echo -ne "\e[31;1m请在5s内输入：\e[0m"
 read -t 5 op
-[ "\$?" == "0" ] && [ "\$op" == "" ]&& ./$bin
+if [ "\$?" == "0" ];then
+	[ "\$op" == "" ]&& ./$bin
+else
+	echo -e "若想启动ubuntu系统也可以手动输入\e[31;1m bash start-ubuntu20.sh\e[0m 命令哦"
+fi
 EOF
 
 msg $red "首次启动系统～"
