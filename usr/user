@@ -90,7 +90,15 @@ _add(){
 	
 	msg $red "添加新用户$USER成功"
 	sleep 1
-	echo "vnc start " >> /home/$USER/.profile
+	cat <<-EOF >> /home/$USER/.profile
+	vnc start
+	if [ ! -z "`dpkg -l | grep -w xrdp`" ];then
+		xrdp -k
+		rm -rf /var/run/xrdp/xrdp.pid
+		xrdp
+	fi
+	EOF
+	
 	cat <<-EOF >"/home/$USER/.bash_profile"
 	#!/bin/bash
 	rm -rf /etc/resolv.conf
