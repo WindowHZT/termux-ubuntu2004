@@ -62,11 +62,21 @@ _start(){
 		EOF
 	fi
 	
+	##启动tigervnc
 	service dbus start  > /dev/null 2>&1
 	vncserver -kill :1  > /dev/null 2>&1
 	source $CONFIG
 	msg $red "VNC服务器启动ing…默认密码为$USER的帐号密码"
 	LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver -localhost no -depth 24 -name remote-desktop $GEO :$PORT
+	
+	##启动xrdp
+	if [ ! -z "$(command -v xrdp)" ];then
+		xrdp -k
+		rm -rf /var/run/xrdp/xrdp.pid
+		xrdp
+	fi
+	
+	[ ! -z "$(command -v fcitx)" ]&& fcitx
 	
 	_login
 	msg $green "ubuntu20.04开机完毕·欢迎~"
@@ -199,7 +209,7 @@ _xfce(){
 	EOF
 	
 	sudo apt install fonts-wqy-microhei  libglu1-mesa bsdmainutils xdg-utils libxslt-dev libxml2-dev python3-pyqt5 ttf-mscorefonts-installer -y  # language-selector-gnome at-spi2-core 
-	sudo chmod u+s /usr/lib/dbus-1.0/dbus-daemon-launch-helper
+	#sudo chmod u+s /usr/lib/dbus-1.0/dbus-daemon-launch-helper
 	#sudo apt-get install $(check-language-support) -y
 	
 	echo "export DISPLAY=\":1\"" >> /etc/profile
