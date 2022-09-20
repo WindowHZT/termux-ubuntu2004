@@ -588,6 +588,8 @@ _Main(){
 			lsb_release -a
 			echo -e "$green----------------磁盘-----------------$white"
 			df -hl
+			echo -e "$green----------------服务运行状态-----------------$white"
+			service --status-all 
 			enter
 			_other
     		;;

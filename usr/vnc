@@ -63,7 +63,8 @@ _start(){
 	fi
 	
 	##启动tigervnc
-	service dbus start  > /dev/null 2>&1
+	service dbus stop  > /dev/null 2>&1
+	dbus-daemon --system  > /dev/null 2>&1
 	vncserver -kill :1  > /dev/null 2>&1
 	source $CONFIG
 	msg $red "VNC服务器启动ing…默认密码为$USER的帐号密码"
@@ -170,23 +171,34 @@ _DPI(){
 }
 
 _xfce(){
+	
 	msg $red "安装xfce桌面"
 	echo -e "$red请输入root用户的密码：$white"
 	sudo apt purge dialog -y
 
-	sudo apt install software-properties-common -y
+	sudo  apt install eatmydata -y
+	sudo eatmydata apt install software-properties-common -y
 	sudo add-apt-repository ppa:xubuntu-dev/staging -y
 	sudo apt-get update
-	sudo apt install udisks2 -y
+	
+	sudo eatmydata apt install udisks2 -y
 	echo "" > /var/lib/dpkg/info/udisks2.postinst
 	sudo dpkg --configure -a
 	sudo apt-mark hold udisks2
-	sudo apt install keyboard-configuration -y
-	sudo apt install tzdata -y
-	sudo apt install sudo wget nano inetutils-tools dialog bc -y
-	sudo apt install xfce4 xfce4-goodies xfce4-terminal exo-utils tigervnc-standalone-server tigervnc-common dbus-x11 ffmpeg  language-pack-en --no-install-recommends -y
+	sudo mv /var/lib/dpkg/info/ /var/lib/dpkg/info_old/
+	sudo mkdir /var/lib/dpkg/info/
+	sudo apt-get update
+	sudo apt-get -f install
+	sudo mv /var/lib/dpkg/info/* /var/lib/dpkg/info_old/
+	sudo rm -rf /var/lib/dpkg/info
+	sudo mv /var/lib/dpkg/info_old/ /var/lib/dpkg/info/
+
+	sudo eatmydata apt install keyboard-configuration -y
+	sudo eatmydata apt install tzdata -y
+	sudo eatmydata apt install sudo wget nano inetutils-tools dialog bc -y
+	sudo eatmydata apt install xfce4 xfce4-goodies xfce4-terminal exo-utils tigervnc-standalone-server tigervnc-common dbus-x11 ffmpeg  language-pack-en --no-install-recommends -y
 	#sudo apt --fix-broken install
-	sudo apt clean git -y
+	sudo eatmydata apt clean git -y
 	
 	mkdir -p ~/.vnc
 	USER=`cat /usr/local/bin/.USER`
@@ -208,7 +220,7 @@ _xfce(){
 	dbus-launch --exit-with-session startxfce4 &
 	EOF
 	
-	sudo apt install fonts-wqy-microhei  libglu1-mesa bsdmainutils xdg-utils libxslt-dev libxml2-dev python3-pyqt5 ttf-mscorefonts-installer -y  # language-selector-gnome at-spi2-core 
+	sudo eatmydata apt install fonts-wqy-microhei  libglu1-mesa bsdmainutils xdg-utils libxslt-dev libxml2-dev python3-pyqt5 ttf-mscorefonts-installer -y  # language-selector-gnome at-spi2-core 
 	#sudo chmod u+s /usr/lib/dbus-1.0/dbus-daemon-launch-helper
 	#sudo apt-get install $(check-language-support) -y
 	
