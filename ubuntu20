@@ -345,4 +345,5 @@ fi
 EOF
 
 msg $red "首次启动系统～"
+
 bash $bin
