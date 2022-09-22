@@ -77,7 +77,7 @@ _start(){
 		xrdp
 	fi
 	
-	[ ! -z "$(command -v fcitx)" ]&& fcitx
+	
 	
 	_login
 	msg $green "ubuntu20.04开机完毕·欢迎~"
@@ -188,7 +188,7 @@ _xfce(){
 
 	sudo eatmydata apt install keyboard-configuration -y
 	sudo eatmydata apt install tzdata -y
-	sudo eatmydata apt install sudo wget nano inetutils-tools dialog bc -y #dbus-x11
+	sudo eatmydata apt install sudo wget nano inetutils-tools dialog bc dbus-x11 -y 
 	sudo eatmydata apt install xfce4 xfce4-goodies xfce4-terminal exo-utils tigervnc-standalone-server tigervnc-common  ffmpeg  language-pack-en --no-install-recommends -y
 	#sudo apt --fix-broken install
 	sudo eatmydata apt clean git -y
@@ -214,9 +214,17 @@ _xfce(){
 	EOF
 	
 	sudo eatmydata apt install fonts-wqy-microhei  libglu1-mesa bsdmainutils xdg-utils libxslt-dev libxml2-dev python3-pyqt5 ttf-mscorefonts-installer -y  # language-selector-gnome at-spi2-core 
-	#sudo chmod u+s /usr/lib/dbus-1.0/dbus-daemon-launch-helper
-	#sudo apt-get install $(check-language-support) -y
 	
+	##安装fcitx
+	sudo eatmydata apt purge ibus -y
+	sudo eatmydata apt install fcitx fcitx-ui-qimpanel -y
+	sudo eatmydata apt install fcitx-bin -y
+	sudo eatmydata apt install fcitx-table -y
+	sudo eatmydata apt install fcitx-pinyin -y
+	#sudo eatmydata apt remove fcitx-ui-classic -y
+	im-config fcitx
+	sudo cp /usr/share/fcitx/xdg/autostart/fcitx-autostart.desktop /etc/xdg/autostart/
+
 	echo "export DISPLAY=\":1\"" >> /etc/profile
 	source /etc/profile
 	
@@ -224,6 +232,13 @@ _xfce(){
 	[ ! -z "`cat /etc/locale.gen|grep '# zh_CN.UTF-8 UTF-8'`" ]&&sed -i "s/# zh_CN.UTF-8 UTF-8/ zh_CN.UTF-8 UTF-8/g" /etc/locale.gen
 	locale-gen
 	echo "export LC_ALL=zh_CN.UTF-8" >> ~/.bashrc
+	
+	cat <<-EOF>> /etc/environment
+	SDL_IM_MODULE="fcitx"
+	XMODIFIERS="@im=fcitx"
+	QT_IM_MODULE="fcitx"
+	GTK_IM_MODULE="fcitx"
+	EOF
 	
 	cat <<-EOF>> ~/.bashrc
 	if [ "\$TERM"="linux" ] ;then 
