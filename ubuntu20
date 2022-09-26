@@ -13,9 +13,16 @@ echo `date +"%Y-%m-%d %H:%M:%S"` > `pwd`/Time
 msg() { clear;echo -e "\n\t\t$blue[*]$white$1$2$white\n" ;:;}  ##自定义通告颜色
 enter() { echo -en "\n\n$green按回车继续$white";read op ;:;} 
 
-msg $red "等待授权5s"
+msg $red "等待授权存储…®login"
+echo -e "\n$yellow小提示：请允许应用使用存储，否则会导致无法正常使用！$white"
+enter
 termux-setup-storage
-sleep 5
+enter
+msg $red "等待授权后台运行…®login"
+echo -e "\n$yellow小提示：请允许应用后台无限制运行(即加入白名单)，否则会导致应用卡顿！$white"
+enter
+termux-wake-lock
+enter
 
 msg $red "更新软件包"
 pkg update -y 
@@ -23,10 +30,6 @@ pkg i wget proot -y
 
 msg $red "配置声音模块"
 pkg i pulseaudio -y
-##在start-ubuntu.sh添加
-#	pulseaudio -k >> /dev/null 2>&1
-#	pulseaudio --start >> /dev/null 2>&1
-##在xstartup加
 #	export PULSE_SERVER=127.0.0.1
 if [ -e ~/../usr/etc/pulse/default.pa ];then
 	echo "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" >> ~/../usr/etc/pulse/default.pa
@@ -220,6 +223,7 @@ bin=start-ubuntu20.sh
 	pulseaudio -k >> /dev/null 2>&1
 	pulseaudio --start >> /dev/null 2>&1
 	unset LD_PRELOAD
+	#export PROOT_NO_SECCOMP=1
 	command="proot"
 	command+=" --kill-on-exit"
 	command+=" --link2symlink"
@@ -256,7 +260,9 @@ bin=start-ubuntu20.sh
 	command+=" HOME=/root"
 	command+=" PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games"
 	command+=" TERM=$TERM"
-	command+=" LANG=C.UTF-8"
+	#command+=" LANG=C.UTF-8"
+	command+=" LANG=zh_CN.UTF-8"
+	#command+=" PULSE_SERVER=tcp:127.0.0.1:4713"
 	command+=" /bin/bash --login"
 	com="\$@"
 	if [ -z "\$1" ];then
@@ -296,7 +302,7 @@ touch $folder/root/.hushlogin
 	
 	rm -rf /etc/resolv.conf
 	echo "nameserver 8.8.8.8" >> /etc/resolv.conf
-	apt update -y && apt install wget sudo language-pack-zh-hans dialog -y
+	apt update -y && apt install wget sudo language-pack-zh-hans language-pack-zh-hans-base language-pack-zh-hant language-pack-zh-hant-base dialog -y
 	rm -rf /etc/skel/.profile.1 /root/.profile.1
 	export LC_ALL=zh_CN.UTF-8 
 	user
