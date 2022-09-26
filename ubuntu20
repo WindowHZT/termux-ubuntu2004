@@ -67,8 +67,16 @@ if [ "$first" != 1 ];then
 		*)
 			echo "未知构架"; exit 1 ;;
 		esac
-		wget -c "https://github.com/WindowHZT/termux-ubuntu2004/releases/download/ubuntu2004/focal-$archurl.tar.gz" -O ubuntu20-rootfs.tar.gz
-						
+		while :
+		do
+			wget -c "https://github.com/WindowHZT/termux-ubuntu2004/releases/download/ubuntu2004/focal-$archurl.tar.gz" -O ubuntu20-rootfs.tar.gz
+			if [ ! "$?" == "0" ];then
+				echo -e "$yellow下载资源失败！请检查网络再继续下载……"
+				enter
+			else
+				break
+			fi
+		done
 fi
 	mkdir -p "$folder"
 	cd "$folder"
@@ -304,7 +312,7 @@ touch $folder/root/.hushlogin
 	echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 	apt update -y && apt install wget sudo language-pack-zh-hans language-pack-zh-hans-base language-pack-zh-hant language-pack-zh-hant-base dialog -y
 	rm -rf /etc/skel/.profile.1 /root/.profile.1
-	export LC_ALL=zh_CN.UTF-8 
+	#export LC_ALL=zh_CN.UTF-8 
 	user
 	EOF
 	
@@ -326,10 +334,23 @@ touch $folder/root/.hushlogin
 	EOF
 
 chmod +x $tarball
+
 for x in user vnc ubuntu software
 do
-	wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/$x" -O "$cur/$folder/usr/local/bin/$x"
+	while :
+	do
+		wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/$x" -O "$cur/$folder/usr/local/bin/$x"
+		if [ ! "$?" == "0" ];then
+			echo -e "$yellow下载资源失败！请检查网络再继续下载……"
+			enter
+		else
+			break
+		fi
+	done
 done
+
+
+
 
 chmod +x $folder/root/.profile
 chmod 770 $folder/usr/local/bin/*
