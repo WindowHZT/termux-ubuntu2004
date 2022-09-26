@@ -68,13 +68,16 @@ _start(){
 		EOF
 	fi
 	
-	##启动tigervnc
-	service dbus stop
-	dbus-daemon --system
-	service dbus status 
+	echo -e "\n$red ubuntu启动ing…默认密码为$green$USER$red的帐号密码$white"
+	sudo echo 
+	sudo service dbus restart
+	sudo service dbus stop
+	sudo dbus-daemon --system
+	sudo service dbus status 
+	
+	##启动tigervnc 
 	vncserver -kill :1  > /dev/null 2>&1
 	source $CONFIG
-	echo -e "\n$red VNC服务器启动ing…默认密码为$green$USER$red的帐号密码$white"
 	LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver -localhost no -depth 24 -name remote-desktop $GEO :$PORT
 	
 	##启动xrdp
@@ -82,7 +85,6 @@ _start(){
 		xrdp -k
 		rm -rf /var/run/xrdp/xrdp-sesman.pid
 		rm -rf /var/run/xrdp/xrdp.pid
-		echo -e "\n$red xrdp服务启动ing…默认密码为$green$USER$red的帐号密码$white"
 		sudo service xrdp restart
 		sleep 0.9
 		sudo service xrdp status
@@ -288,6 +290,7 @@ if [ ! -e $CONFIG  ];then
 	##设置面板图标
 	mkdir -p ~/.icons
 	wget https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/mix/ubuntu-logo-icon.png -O ~/.icons/ubuntu-logo-icon.png
+	sudo service dbus start
 	_start
 	
 	##设置状态栏图标
