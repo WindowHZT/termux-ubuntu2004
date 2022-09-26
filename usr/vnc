@@ -34,6 +34,7 @@ _login(){
 
 
 _start(){
+	clear
 	[ ! -e "/data/data/com.termux/files/home/storage/shared/swap" ]&&mkdir /data/data/com.termux/files/home/storage/shared/swap
 	[ ! -e "`echo ~/Desktop/MTS`" ]&&mkdir ~/Desktop/MTS
 	[ ! -L "`echo ~/Desktop/MTS/swap`" ]&&ln -s /data/data/com.termux/files/home/storage/shared/swap ~/Desktop/MTS
@@ -68,22 +69,26 @@ _start(){
 	fi
 	
 	##启动tigervnc
-	service dbus stop  > /dev/null 2>&1
-	dbus-daemon --system  > /dev/null 2>&1
+	service dbus stop
+	dbus-daemon --system
+	service dbus status 
 	vncserver -kill :1  > /dev/null 2>&1
 	source $CONFIG
-	msg $red "VNC服务器启动ing…默认密码为$USER的帐号密码"
+	echo -e "\n$red VNC服务器启动ing…默认密码为$green$USER$red的帐号密码$white"
 	LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver -localhost no -depth 24 -name remote-desktop $GEO :$PORT
 	
 	##启动xrdp
 	if [ ! -z "$(command -v xrdp)" ];then
 		xrdp -k
+		rm -rf /var/run/xrdp/xrdp-sesman.pid
 		rm -rf /var/run/xrdp/xrdp.pid
-		xrdp
+		echo -e "\n$red xrdp服务启动ing…默认密码为$green$USER$red的帐号密码$white"
+		sudo service xrdp restart
+		sleep 0.9
+		sudo service xrdp status
 	fi
 	
-	
-	
+	service --status-all
 	_login
 	msg $green "ubuntu20.04开机完毕·欢迎~"
 	echo -e "\t$red获取更多帮助请使用命令 ubuntu$white"
@@ -207,8 +212,8 @@ _xfce(){
 	export PULSE_SERVER=127.0.0.1
 	XAUTHORITY=\$HOME/.Xauthority
 	export XAUTHORITY
-	LANG=en_US.UTF-8
-	export LANG
+	#LANG=en_US.UTF-8
+	#export LANG
 	echo \$\$ > /tmp/xsession.pid
 	dbus-launch --exit-with-session startxfce4 &
 	EOF
@@ -250,11 +255,12 @@ _xfce(){
 	
 	cat <<-EOF>> ~/.bashrc
 	if [ "\$TERM"="linux" ] ;then 
-		export LANGUAGE=en_US 
+		#export LANGUAGE=en_US 
+		echo ""
 	fi 
 	EOF
 	
-	cd ~/.config/xfce4/panel/launcher-20/
+	cd ~/.config/xfce4/panel/launcher-18/
 	cat<<-EOF > `ls`
 	[Desktop Entry]
 	Version=1.0
@@ -277,7 +283,6 @@ _xfce(){
 if [ ! -e $CONFIG  ];then
 
 	_xfce
-	echo " " > $CONFIG
 	_DPI
 	export LC_ALL=""
 	##设置面板图标
