@@ -310,7 +310,9 @@ touch $folder/root/.hushlogin
 	
 	rm -rf /etc/resolv.conf
 	echo "nameserver 8.8.8.8" >> /etc/resolv.conf
-	apt update -y && apt install wget sudo language-pack-zh-hans language-pack-zh-hans-base language-pack-zh-hant language-pack-zh-hant-base dialog -y
+	apt-get update -y
+	apt update -y
+	apt-get install wget sudo language-pack-zh-han* dialog -y
 	rm -rf /etc/skel/.profile.1 /root/.profile.1
 	#export LC_ALL=zh_CN.UTF-8 
 	user
