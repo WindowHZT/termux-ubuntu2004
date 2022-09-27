@@ -68,12 +68,12 @@ _start(){
 		EOF
 	fi
 	
-	echo -e "\n$red ubuntu启动ing…默认密码为$green$USER$red的帐号密码$white"
+	echo -e "\n$red密码为$green$USER$red的密码$white"
 	sudo echo 
-	sudo service dbus restart
-	sudo service dbus stop
-	sudo dbus-daemon --system
-	sudo service dbus status 
+	service dbus restart
+	service dbus stop
+	dbus-daemon --system
+	service dbus status 
 	
 	##启动tigervnc 
 	vncserver -kill :1  > /dev/null 2>&1
@@ -220,7 +220,10 @@ _xfce(){
 	dbus-launch --exit-with-session startxfce4 &
 	EOF
 	
-	sudo eatmydata apt install fonts-wqy-microhei  libglu1-mesa bsdmainutils xdg-utils libxslt-dev libxml2-dev python3-pyqt5 ttf-mscorefonts-installer -y  # language-selector-gnome at-spi2-core 
+	for x in fonts-wqy-microhei  libglu1-mesa bsdmainutils xdg-utils libxslt-dev libxml2-dev python3-pyqt5 ttf-mscorefonts-installer man-db vim
+	do
+		sudo eatmydata apt install "$x" -y
+	done
 	
 	##安装fcitx
 	sudo eatmydata apt purge ibus -y
@@ -262,8 +265,11 @@ _xfce(){
 	fi 
 	EOF
 	
-	cd ~/.config/xfce4/panel/launcher-18/
-	cat<<-EOF > `ls`
+	##设置面板图标
+	mkdir -p ~/.icons
+	wget https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/mix/ubuntu-logo-icon.png -O /tmp/ubuntu-logo-icon.png
+	
+	cat<<-EOF > "/usr/share/applications/ubuntu.desktop"
 	[Desktop Entry]
 	Version=1.0
 	Name=ubuntu
@@ -274,10 +280,39 @@ _xfce(){
 	Terminal=true
 	X-MultipleArgs=false
 	Type=Application
-	Icon=$HOME/.icons/ubuntu-logo-icon.png
+	Icon=/tmp/ubuntu-logo-icon.png
 	EOF
-	cd ~
-		
+	
+	sudo chmod 644 /usr/share/applications/ubuntu.desktop
+
+	if [ -f /etc/dpkg/dpkg.cfg.d/excludes ] || [ -f /etc/dpkg/dpkg.cfg.d/excludes.dpkg-tmp ]; then
+	    if [ -f /etc/dpkg/dpkg.cfg.d/excludes ]; then
+ 	       mv /etc/dpkg/dpkg.cfg.d/excludes /etc/dpkg/dpkg.cfg.d/excludes.dpkg-tmp
+		fi
+
+		apt-get update
+	 	apt-get upgrade
+		dpkg -S /usr/share/man/ |sed 's|, |\n|g;s|: [^:]*$||' | DEBIAN_FRONTEND=noninteractive xargs apt-get install --reinstall -y
+		dpkg --verify --verify-format rpm | awk '/..5......   \/usr\/share\/doc/ {print $2}' | sed 's|/[^/]*$||' | sort |uniq \
+ 	        | xargs dpkg -S | sed 's|, |\n|g;s|: [^:]*$||' | uniq | DEBIAN_FRONTEND=noninteractive xargs apt-get install --reinstall -y
+		dpkg --verify --verify-format rpm | awk '/..5......   \/usr\/share\/locale/ {print $2}' | sed 's|/[^/]*$||' | sort |uniq \
+			| xargs dpkg -S | sed 's|, |\n|g;s|: [^:]*$||' | uniq | DEBIAN_FRONTEND=noninteractive xargs apt-get install --reinstall -y
+    
+		if dpkg --verify --verify-format rpm | awk '/..5......   \/usr\/share\/doc/ {exit 1}'; then
+			rm /etc/dpkg/dpkg.cfg.d/excludes.dpkg-tmp
+		else
+			dpkg --verify --verify-format rpm | awk '/..5......   \/usr\/share\/doc/ {print " " $2}'
+		fi
+	fi
+
+
+
+	if  [ "$(dpkg-divert --truename /usr/bin/man)" = "/usr/bin/man.REAL" ]; then
+		rm -f /usr/bin/man
+		dpkg-divert --quiet --remove --rename /usr/bin/man
+	fi
+	rm -f /etc/update-motd.d/60-unminimize
+
 }
 
 
@@ -286,15 +321,20 @@ if [ ! -e $CONFIG  ];then
 
 	_xfce
 	_DPI
-	export LC_ALL=""
-	##设置面板图标
-	mkdir -p ~/.icons
-	wget https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/mix/ubuntu-logo-icon.png -O ~/.icons/ubuntu-logo-icon.png
-	sudo service dbus start
+	service dbus start
 	_start
 	
+	xfconf-query -c xfce4-panel -np "/plugins/plugin-33" -t 'string' -s "launcher"
+	xfconf-query -c xfce4-panel -np "/plugins/plugin-33/items" -t 'string' -a -s "ubuntu.desktop"
+
+	xfconf-query -c xfce4-panel -np "/plugins/plugin-34" -t 'string' -s "launcher"
+	xfconf-query -c xfce4-panel -np "/plugins/plugin-34/items" -t 'string' -a -s "xfce4-screenshooter.desktop"
+
+	#添加面板数组
+	xfconf-query -c xfce4-panel -np /panels/panel-2/plugin-ids -t 'int' -s 15 -t 'int' -s 16 -t 'int' -s 17 -t 'int' -s 18 -t 'int' -s 19 -t 'int' -s 20 -t 'int' -s 34 -t 'int' -s 33 -t 'int' -s 21 -t 'int' -s 22
+
 	##设置状态栏图标
-	xfconf-query -c xfce4-panel -np '/plugins/plugin-1/button-icon' -t 'string' -s '/home/hzt/.icons/ubuntu-logo-icon.png'
+	xfconf-query -c xfce4-panel -np '/plugins/plugin-1/button-icon' -t 'string' -s "/tmp/ubuntu-logo-icon.png"
 	##设置状态栏大小
 	xfconf-query -c xfce4-panel -np '/panels/panel-1/icon-size' -t 'int' -s 20
 	##设置plank面板图标大小
@@ -304,6 +344,9 @@ if [ ! -e $CONFIG  ];then
 	##设置桌面图标大小
 	xfconf-query -c xfce4-desktop -np '/desktop-icons/icon-size' -t 'int' -s 100
 	
+	echo "284684.56 513853.46" > /proc/uptime
+	echo "0.54 0.41 0.30 1/931 370386" >/proc/loadavg
+
 	startTime=`cat /data/data/com.termux/files/home/Time`
 	rm -rf /data/data/com.termux/files/home/Time
 	endTime=`date +"%Y-%m-%d %H:%M:%S"`
@@ -311,7 +354,7 @@ if [ ! -e $CONFIG  ];then
 	et=`date -d  "$endTime" +%s`
 	sumTime=$(($et-$st))
 	
-	echo -e "\n\n\t安装ubuntu20.04总耗时 : $sumTime second."
+	echo -e "\n\n\t安装ubuntu20.04总耗时 : `echo $sumTime/60 | bc` Minutes."
 	exit
 fi
 

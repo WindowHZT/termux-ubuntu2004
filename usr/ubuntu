@@ -143,10 +143,11 @@ _theme(){
 		msg $red "下载资源包…ing"
 		wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/bg/$package" -O "/tmp/bg/$package"
 		
-		xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/last-image -s  "/tmp/bg/$package"
+		xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/last-image
+		 -s  "/tmp/bg/$package"
 		
 		msg $green "设置桌面背景`echo $package | sed "s#.png##g;s#.jpg##g;s#.jpeg##g"`完成～"
-		echo -e "$green\n\n\t如何桌面背景没有设置成功请检查网络，再重新设置！"
+		echo -e "$green\n\n\t如果桌面背景没有设置成功请检查网络，再重新设置！"
 		enter
 	}
 	
@@ -174,7 +175,7 @@ _theme(){
 		xfconf-query -c xsettings -p /Net/ThemeName -s "`echo $package | sed "s#.tar.xz##g"`"
 		
 		msg $green "设置主题`echo $package | sed "s#.tar.xz##g"`完成～"
-		echo -e "$green\n\n\t如何主题没有设置成功请检查网络，再重新设置！"
+		echo -e "$green\n\n\t如果主题没有设置成功请检查网络，再重新设置！"
 		enter
 	}
 	
@@ -202,7 +203,7 @@ _theme(){
 		xfconf-query -c xsettings -p /Net/IconThemeName -s "`echo $package | sed "s#.tar.xz##g"`"
 		
 		msg $green "设置软件图标`echo $package | sed "s#.tar.xz##g"`完成～"
-		echo -e "$green\n\n\t如何软件图标没有设置成功请检查网络，再重新设置！"
+		echo -e "$green\n\n\t如果软件图标没有设置成功请检查网络，再重新设置！"
 		enter
 	
 	}
@@ -231,7 +232,7 @@ _theme(){
 		xfconf-query -c xsettings -p /Gtk/CursorThemeName -s "`echo $package | sed "s#.tar.xz##g"`"
 		
 		msg $green "设置光标(鼠标)`echo $package | sed "s#.tar.xz##g"`完成～"
-		echo -e "$green\n\n\t如何光标(鼠标)没有设置成功请检查网络，再重新设置！"
+		echo -e "$green\n\n\t如果光标(鼠标)没有设置成功请检查网络，再重新设置！"
 		enter	
 	}
 	
@@ -441,15 +442,22 @@ _update(){
 	echo -e "\n\n\t作者不定时更新脚本，如想体验新功能，更新ubuntu脚本即可体验！"
 	enter
 	
-	wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/ubuntu" -O "/tmp/ubuntu"
-	wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/vnc" -O "/tmp/vnc"
-	wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/software" -O "/tmp/software"
-	mv /tmp/ubuntu /usr/local/bin/ubuntu
-	mv /tmp/vnc /usr/local/bin/vnc
-	mv /tmp/software /usr/local/bin/software
-	chmod +x /usr/local/bin/ubuntu
-	chmod +x /usr/local/bin/vnc
-	chmod +x /usr/local/bin/software
+	for x in ubuntu vnc software 
+	do
+		while :
+		do
+			wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/$x" -O "/tmp/$x"
+			if [ ! "$?" == "0" ];then
+				echo -e "$yellow下载资源失败！请检查网络再继续下载……"
+				enter
+			else
+				mv /tmp/$x /usr/local/bin/$x
+				chmod +x /usr/local/bin/$x
+				break
+			fi
+		done
+	done
+	
 	msg $green "更新完毕～"
 	enter
 	exit
@@ -548,6 +556,7 @@ _dialog(){
 
 
 _Main(){
+	CONFIG=/usr/local/bin/.config
 	OPTIONS=(
          1 "安装/卸载软件"
          2 "桌面美化"
