@@ -268,7 +268,8 @@ _xfce(){
 	
 	##设置面板图标
 	mkdir -p ~/.icons
-	wget https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/mix/ubuntu-logo-icon.png -O /tmp/ubuntu-logo-icon.png
+	#wget https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/mix/ubuntu-logo-icon.png -O /tmp/ubuntu-logo-icon.png
+	wget gitee.com/djyd/termux-ubuntu2004/raw/main/mix/ubuntu-logo-icon.png	 -O /tmp/ubuntu-logo-icon.png
 	
 	cat<<-EOF > "/usr/share/applications/ubuntu.desktop"
 	[Desktop Entry]
