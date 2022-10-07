@@ -141,8 +141,8 @@ _theme(){
 		[ ! -e /tmp/bg/ ]&&mkdir -p /tmp/bg/
 		
 		msg $red "下载资源包…ing"
-		#wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/bg/$package" -O "/tmp/bg/$package"
-		wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/bg/$package" -O "/tmp/bg/$package"
+		wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/bg/$package" -O "/tmp/bg/$package"
+		#wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/bg/$package" -O "/tmp/bg/$package"
 		
 		xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/last-image -s  "/tmp/bg/$package"
 		var=`xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/last-image `
@@ -166,10 +166,9 @@ _theme(){
 		if [ ! -e "~/.themes/`echo $package | sed "s#.tar.xz##g"`" ];then
 			[ ! -e ~/.themes ]&&mkdir -p ~/.themes 
 			msg $red "下载资源包…ing"
-			#wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/.themes/$package" -O "/tmp/.themes/$package"
-			wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/.themes/$package" -O "/tmp/.themes/$package"
-			echo "状态码$?"
-			read op
+			wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/.themes/$package" -O "/tmp/.themes/$package"
+			#wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/.themes/$package" -O "/tmp/.themes/$package"
+
 			msg $red "解压资源…ing"
 			sleep 1
 			xz -d "/tmp/.themes/$package"
@@ -199,10 +198,8 @@ _theme(){
 			[ ! -e ~/.local/share/icons  ]&&mkdir -p ~/.local/share/icons 
 			msg $red "下载资源包…ing"
 			sleep 1
-			#wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/icons/$package" -O "/tmp/icons/$package"
-			wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/icons/$package" -O "/tmp/icons/$package"
-			echo "状态码$?"
-			read op
+			wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/icons/$package" -O "/tmp/icons/$package"
+			#wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/icons/$package" -O "/tmp/icons/$package"
 
 			msg $red "解压资源…ing"
 			xz -d "/tmp/icons/$package"
@@ -233,8 +230,8 @@ _theme(){
 			[ ! -e ~/.icons  ]&&mkdir -p ~/.icons 
 			msg $red "下载资源包…ing"
 			sleep 1
-			#wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/.icons/$package" -O "/tmp/.icons/$package"
-			wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/.icons/$package" -O "/tmp/.icons/$package"
+			wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/.icons/$package" -O "/tmp/.icons/$package"
+			#wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/.icons/$package" -O "/tmp/.icons/$package"
 			
 			msg $red "解压资源…ing"
 			xz -d "/tmp/.icons/$package"
@@ -626,8 +623,8 @@ _update(){
 	do
 		while :
 		do
-			#wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/$x" -O "/tmp/$x"
-			wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/usr/$x" -O "/tmp/$x"
+			wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/$x" -O "/tmp/$x"
+			#wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/usr/$x" -O "/tmp/$x"
 			if [ ! "$?" == "0" ];then
 				echo -e "$yellow下载资源失败！请检查网络再继续下载……"
 				enter

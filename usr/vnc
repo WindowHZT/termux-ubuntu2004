@@ -267,8 +267,8 @@ _xfce(){
 	
 	##设置面板图标
 	mkdir -p ~/.icons
-	#wget https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/mix/ubuntu-logo-icon.png -O /tmp/ubuntu-logo-icon.png
-	wget gitee.com/djyd/termux-ubuntu2004/raw/main/mix/ubuntu-logo-icon.png	 -O /tmp/ubuntu-logo-icon.png
+	wget https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/mix/ubuntu-logo-icon.png -O /tmp/ubuntu-logo-icon.png
+	#wget gitee.com/djyd/termux-ubuntu2004/raw/main/mix/ubuntu-logo-icon.png	 -O /tmp/ubuntu-logo-icon.png
 	
 	cat<<-EOF > "/usr/share/applications/ubuntu.desktop"
 	[Desktop Entry]
@@ -314,17 +314,22 @@ if [ ! -e $CONFIG  ];then
 	
 	##设置状态栏图标
 	xfconf-query -c xfce4-panel -np '/plugins/plugin-1/button-icon' -t 'string' -s "/tmp/ubuntu-logo-icon.png"
+	
 	##设置状态栏大小
 	xfconf-query -c xfce4-panel -np '/panels/panel-1/icon-size' -t 'int' -s 20
+	
 	##设置plank面板图标大小
 	xfconf-query -c xfce4-panel -np '/panels/panel-2/size' -t 'int' -s 100
+	
 	##设置字体大小
 	xfconf-query -c xsettings -np '/Xft/DPI' -t 'int' -s 200
+	
 	##设置桌面图标大小
 	xfconf-query -c xfce4-desktop -np '/desktop-icons/icon-size' -t 'int' -s 100
 	
 	echo "284684.56 513853.46" > /proc/uptime
 	echo "0.54 0.41 0.30 1/931 370386" >/proc/loadavg
+	
 :<<EO
 	msg $red "开始汉化xfce4桌面^_^"
 	if [ -f /etc/dpkg/dpkg.cfg.d/excludes ] || [ -f /etc/dpkg/dpkg.cfg.d/excludes.dpkg-tmp ]; then
@@ -369,7 +374,10 @@ EO
 	st=`date -d  "$startTime" +%s`
 	et=`date -d  "$endTime" +%s`
 	sumTime=$(($et-$st))
+	
 	xfconf-query -c xfce4-panel -np /panels/panel-2/plugin-ids -t 'int' -s 15 -t 'int' -s 16 -t 'int' -s 17 -t 'int' -s 18 -t 'int' -s 19 -t 'int' -s 20 -t 'int' -s 34 -t 'int' -s 33 -t 'int' -s 21 -t 'int' -s 22
+	xfconf-query -c xfce4-panel -np '/panels/panel-2/size' -t 'int' -s 100
+	
 	echo -e "\n\n\t安装ubuntu20.04总耗时 : `echo $sumTime/60 | bc` Minutes."
 	echo -e "$red Ctrl+d关机，重新打开软件即可冲浪🏄$white"
 	exit
