@@ -197,6 +197,12 @@ _xfce(){
 	sudo eatmydata apt install keyboard-configuration -y
 	sudo eatmydata apt install tzdata -y
 	sudo eatmydata apt install sudo wget nano inetutils-tools dialog bc dbus-x11 -y 
+	service dbus start
+	service dbus restart
+	service dbus stop
+	dbus-daemon --system
+	service dbus status 
+
 	sudo eatmydata apt install xfce4 xfce4-goodies xfce4-terminal exo-utils tigervnc-standalone-server tigervnc-common  ffmpeg  language-pack-en --no-install-recommends -y
 	sudo eatmydata apt clean git -y
 	
@@ -287,7 +293,7 @@ _xfce(){
 	sudo chmod 644 /usr/share/applications/ubuntu.desktop
 	echo -e "\n$green$USER$red的密码$white"
 	LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver -localhost no -depth 24 -name remote-desktop :1
-
+	xfconf-query -c xfce4-panel -np '/panels/panel-2/size' -t 'int' -s 100
 
 }
 
@@ -376,7 +382,6 @@ EO
 	sumTime=$(($et-$st))
 	
 	xfconf-query -c xfce4-panel -np /panels/panel-2/plugin-ids -t 'int' -s 15 -t 'int' -s 16 -t 'int' -s 17 -t 'int' -s 18 -t 'int' -s 19 -t 'int' -s 20 -t 'int' -s 34 -t 'int' -s 33 -t 'int' -s 21 -t 'int' -s 22
-	xfconf-query -c xfce4-panel -np '/panels/panel-2/size' -t 'int' -s 100
 	
 	echo -e "\n\n\t安装ubuntu20.04总耗时 : `echo $sumTime/60 | bc` Minutes."
 	echo -e "$red Ctrl+d关机，重新打开软件即可冲浪🏄$white"
