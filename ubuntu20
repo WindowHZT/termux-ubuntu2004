@@ -81,8 +81,8 @@ if [ "$first" != 1 ];then
 		esac
 		while :
 		do
-			#wget -c "https://github.com/WindowHZT/termux-ubuntu2004/releases/download/ubuntu2004/focal-$archurl.tar.gz" -O ubuntu20-rootfs.tar.gz
-			wget -c "gitee.com/djyd/termux-ubuntu2004/releases/download/ubuntu2004/focal-$archurl.tar.gz" -O ubuntu20-rootfs.tar.gz
+			wget -c "https://github.com/WindowHZT/termux-ubuntu2004/releases/download/ubuntu2004/focal-$archurl.tar.gz" -O ubuntu20-rootfs.tar.gz
+			#wget -c "gitee.com/djyd/termux-ubuntu2004/releases/download/ubuntu2004/focal-$archurl.tar.gz" -O ubuntu20-rootfs.tar.gz
 			if [ ! "$?" == "0" ];then
 				echo -e "$yellow下载资源失败！请检查网络再继续下载……"
 				enter
@@ -367,7 +367,7 @@ touch $folder/root/.hushlogin
 
 
 
-chmod +x $tarball
+#chmod +x $tarball
 
 for x in user vnc ubuntu software
 do
