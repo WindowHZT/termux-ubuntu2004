@@ -31,7 +31,7 @@
 Copy and paste this command to Termux:
 复制以下命令到 Termux 执行
 ```bash
-bash -c "$(curl -L gitee.com/djyd/termux-ubuntu2004/raw/main/ubuntu20)"
+bash -c "$(curl -L raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/ubuntu20)"
 ```
 
 
