@@ -268,8 +268,8 @@ _xfce(){
 	
 	##设置面板图标
 	mkdir -p ~/.icons
-	#wget https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/mix/ubuntu-logo-icon.png -O /tmp/ubuntu-logo-icon.png
-	wget gitee.com/djyd/termux-ubuntu2004/raw/main/mix/ubuntu-logo-icon.png	 -O /tmp/ubuntu-logo-icon.png
+	wget https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/mix/ubuntu-logo-icon.png -O /tmp/ubuntu-logo-icon.png
+	#wget gitee.com/djyd/termux-ubuntu2004/raw/main/mix/ubuntu-logo-icon.png	 -O /tmp/ubuntu-logo-icon.png
 	
 	cat<<-EOF > "/usr/share/applications/ubuntu.desktop"
 	[Desktop Entry]
@@ -350,7 +350,7 @@ if [ ! -e $CONFIG  ];then
 	
 	echo "284684.56 513853.46" > /proc/uptime
 	echo "0.54 0.41 0.30 1/931 370386" >/proc/loadavg
-	
+:<<EO
 	msg $red "开始汉化xfce4桌面^_^"
 	if [ -f /etc/dpkg/dpkg.cfg.d/excludes ] || [ -f /etc/dpkg/dpkg.cfg.d/excludes.dpkg-tmp ]; then
 	    if [ -f /etc/dpkg/dpkg.cfg.d/excludes ]; then
@@ -377,6 +377,7 @@ if [ ! -e $CONFIG  ];then
 		sudo dpkg-divert --quiet --remove --rename /usr/bin/man
 	fi
 	sudo rm -f /etc/update-motd.d/60-unminimize
+EO
 
 	startTime=`cat /data/data/com.termux/files/home/Time`
 	rm -rf /data/data/com.termux/files/home/Time
