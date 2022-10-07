@@ -6,7 +6,7 @@ yellow="\e[33;1m"  #黄
 blue="\e[34;1m"    #蓝
 purple="\e[35;1m"    #紫红
 cyanine="\e[36;1m"    #青蓝
-white="\e[0m"
+white="\e[0m"		##白色
 
 msg() { clear;echo -e "\n\t\t$blue[*]$white$1$2$white\n" ;:;}  ##自定义通告颜色
 enter() { echo -en "\n\n$green按回车继续$white";read op ;:;}  ##
@@ -141,13 +141,14 @@ _theme(){
 		[ ! -e /tmp/bg/ ]&&mkdir -p /tmp/bg/
 		
 		msg $red "下载资源包…ing"
-		wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/bg/$package" -O "/tmp/bg/$package"
-		#wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/bg/$package" -O "/tmp/bg/$package"
+		#wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/bg/$package" -O "/tmp/bg/$package"
+		wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/bg/$package" -O "/tmp/bg/$package"
 		
-		xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/last-image
-		 -s  "/tmp/bg/$package"
+		xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/last-image -s  "/tmp/bg/$package"
+		var=`xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/last-image `
 		
-		msg $green "设置桌面背景`echo $package | sed "s#.png##g;s#.jpg##g;s#.jpeg##g"`完成～"
+		#msg $green "设置桌面背景`echo $package | sed "s#.png##g;s#.jpg##g;s#.jpeg##g"`完成～"
+		echo -e "$yellow系统当前背景为$var"
 		echo -e "$green\n\n\t如果桌面背景没有设置成功请检查网络，再重新设置！"
 		enter
 	}
@@ -165,9 +166,10 @@ _theme(){
 		if [ ! -e "~/.themes/`echo $package | sed "s#.tar.xz##g"`" ];then
 			[ ! -e ~/.themes ]&&mkdir -p ~/.themes 
 			msg $red "下载资源包…ing"
-			wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/.themes/$package" -O "/tmp/.themes/$package"
-			#wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/.themes/$package" -O "/tmp/.themes/$package"
-			
+			#wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/.themes/$package" -O "/tmp/.themes/$package"
+			wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/.themes/$package" -O "/tmp/.themes/$package"
+			echo "状态码$?"
+			read op
 			msg $red "解压资源…ing"
 			sleep 1
 			xz -d "/tmp/.themes/$package"
@@ -175,8 +177,10 @@ _theme(){
 		fi
 		
 		xfconf-query -c xsettings -p /Net/ThemeName -s "`echo $package | sed "s#.tar.xz##g"`"
+		var=`xfconf-query -c xsettings -p /Net/ThemeName `
 		
-		msg $green "设置主题`echo $package | sed "s#.tar.xz##g"`完成～"
+		#msg $green "设置主题`echo $package | sed "s#.tar.xz##g"`完成～"
+		echo -e "$yellow系统当前主题为$var"
 		echo -e "$green\n\n\t如果主题没有设置成功请检查网络，再重新设置！"
 		enter
 	}
@@ -195,17 +199,21 @@ _theme(){
 			[ ! -e ~/.local/share/icons  ]&&mkdir -p ~/.local/share/icons 
 			msg $red "下载资源包…ing"
 			sleep 1
-			wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/icons/$package" -O "/tmp/icons/$package"
-			#wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/icons/$package" -O "/tmp/icons/$package"
-			
+			#wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/icons/$package" -O "/tmp/icons/$package"
+			wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/icons/$package" -O "/tmp/icons/$package"
+			echo "状态码$?"
+			read op
+
 			msg $red "解压资源…ing"
 			xz -d "/tmp/icons/$package"
 			tar -xvhf "/tmp/icons/`echo $package | sed "s#.xz##g"`" -C ~/.local/share/icons 
 		fi
 		
 		xfconf-query -c xsettings -p /Net/IconThemeName -s "`echo $package | sed "s#.tar.xz##g"`"
+		var=`xfconf-query -c xsettings -p /Net/IconThemeName`
 		
-		msg $green "设置软件图标`echo $package | sed "s#.tar.xz##g"`完成～"
+		#msg $green "设置软件图标`echo $package | sed "s#.tar.xz##g"`完成～"
+		echo -e "$yellow系统当前软件图标为$var"
 		echo -e "$green\n\n\t如果软件图标没有设置成功请检查网络，再重新设置！"
 		enter
 	
@@ -225,8 +233,8 @@ _theme(){
 			[ ! -e ~/.icons  ]&&mkdir -p ~/.icons 
 			msg $red "下载资源包…ing"
 			sleep 1
-			wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/.icons/$package" -O "/tmp/.icons/$package"
-			#wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/.icons/$package" -O "/tmp/.icons/$package"
+			#wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/.icons/$package" -O "/tmp/.icons/$package"
+			wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/.icons/$package" -O "/tmp/.icons/$package"
 			
 			msg $red "解压资源…ing"
 			xz -d "/tmp/.icons/$package"
@@ -234,8 +242,10 @@ _theme(){
 		fi
 		
 		xfconf-query -c xsettings -p /Gtk/CursorThemeName -s "`echo $package | sed "s#.tar.xz##g"`"
+		var=`xfconf-query -c xsettings -p /Gtk/CursorThemeName`
 		
-		msg $green "设置光标(鼠标)`echo $package | sed "s#.tar.xz##g"`完成～"
+		#msg $green "设置光标(鼠标)`echo $package | sed "s#.tar.xz##g"`完成～"
+		echo -e "$yellow系统当前光标为$var"
 		echo -e "$green\n\n\t如果光标(鼠标)没有设置成功请检查网络，再重新设置！"
 		enter	
 	}
@@ -253,20 +263,20 @@ _theme(){
     
 	case $op in
     	1)
-    		_bg
-    		;;
+			_bg
+			;;
     	2)
-    		_themes
-    		;;
+			_themes
+			;;
     	3)
-    		_icons
-    		;;
+			_icons
+			;;
     	4)
-    		_mouse
-    		;;
+			_mouse
+			;;
     	*)
-    		return
-    		;;
+			return
+			;;
 	esac
 
 }
@@ -291,43 +301,43 @@ _Sources(){
 	sourcesFile="/data/data/com.termux/files/usr/etc/apt/sources.list"
 	case $op in
     	1)
-    		cat <<- EOF> $sourcesFile   ##官方
-    		# The main termux repository, behind cloudflare cache:
-    		# deb https://packages-cf.termux.dev/apt/termux-main/ stable main
-    		# The main termux repository:
-    		deb https://packages.termux.dev/apt/termux-main/ stable main
-    		EOF
-    		;;
+			cat<<-EOF>$sourcesFile   ##官方
+			# The main termux repository, behind cloudflare cache:
+			# deb https://packages-cf.termux.dev/apt/termux-main/ stable main
+			# The main termux repository:
+			deb https://packages.termux.dev/apt/termux-main/ stable main
+			EOF
+			;;
     	2)
-    		cat <<- EOF> $sourcesFile   ##清华
+			cat<<-EOF>$sourcesFile   ##清华
 			# The termux repository mirror from TUNA:
 			deb https://mirrors.tuna.tsinghua.edu.cn/termux/apt/termux-main stable main
-    		EOF
-    		;;
+			EOF
+			;;
     	3)
-    		cat <<- EOF> $sourcesFile  ##北京外国语
-    		# The main termux repository, behind cloudflare cache:
-    		# deb https://packages-cf.termux.dev/apt/termux-main/ stable main
-    		# The main termux repository:
-    		#deb https://packages.termux.dev/apt/termux-main/ stable main
-    		deb https://mirrors.bfsu.edu.cn/termux/apt/termux-main stable main
-    		EOF
-    		;;
+			cat<<-EOF>$sourcesFile  ##北京外国语
+			# The main termux repository, behind cloudflare cache:
+			# deb https://packages-cf.termux.dev/apt/termux-main/ stable main
+			# The main termux repository:
+			#deb https://packages.termux.dev/apt/termux-main/ stable main
+			deb https://mirrors.bfsu.edu.cn/termux/apt/termux-main stable main
+			EOF
+			;;
     	4)
-    		cat <<- EOF> $sourcesFile
-    		# The termux repository mirror from aliyun:
+			cat<<-EOF>$sourcesFile
+			# The termux repository mirror from aliyun:
 			deb https://mirrors.aliyun.com/termux/termux-packages-24 stable main
-    		EOF
-    		;;
+			EOF
+			;;
     	5)
-    		cat <<- EOF> $sourcesFile
-    		# The termux repository mirror from ustc:
+			cat<<-EOF>$sourcesFile
+			# The termux repository mirror from ustc:
 			deb https://mirrors.ustc.edu.cn/termux/apt/termux-main stable main
-    		EOF
-    		;;
+			EOF
+			;;
     	*)
-    		return
-    		;;
+			return
+			;;
 	esac
 	msg $red "更换成功！"
 	echo -e "$yellow如果网速不能跑满你的宽带网络，请更换其他源$white"
@@ -349,95 +359,105 @@ _Sources(){
  
 	case $op in
     	1)
-    		cat<<- EOF> /etc/apt/sources.list   ##官方
-    		deb http://ports.ubuntu.com/ubuntu-ports/ focal main restricted
-    		deb http://ports.ubuntu.com/ubuntu-ports/ focal-updates main restricted
-    		deb http://ports.ubuntu.com/ubuntu-ports/ focal universe
-    		deb http://ports.ubuntu.com/ubuntu-ports/ focal-updates universe
-    		deb http://ports.ubuntu.com/ubuntu-ports/ focal multiverse
-    		deb http://ports.ubuntu.com/ubuntu-ports/ focal-updates multiverse
-    		deb http://ports.ubuntu.com/ubuntu-ports/ focal-backports main restricted universe multiverse
-    		deb http://ports.ubuntu.com/ubuntu-ports/ focal-security main restricted
-    		deb http://ports.ubuntu.com/ubuntu-ports/ focal-security universe
-    		deb http://ports.ubuntu.com/ubuntu-ports/ focal-security multiverse
-    		EOF
-    		;;
+			cat<<-EOF>/etc/apt/sources.list   ##官方
+			deb http://ports.ubuntu.com/ubuntu-ports/ focal main restricted
+			deb http://ports.ubuntu.com/ubuntu-ports/ focal-updates main restricted
+			deb http://ports.ubuntu.com/ubuntu-ports/ focal universe
+			deb http://ports.ubuntu.com/ubuntu-ports/ focal-updates universe
+			deb http://ports.ubuntu.com/ubuntu-ports/ focal multiverse
+			deb http://ports.ubuntu.com/ubuntu-ports/ focal-updates multiverse
+			deb http://ports.ubuntu.com/ubuntu-ports/ focal-backports main restricted universe multiverse
+			deb http://ports.ubuntu.com/ubuntu-ports/ focal-security main restricted
+			deb http://ports.ubuntu.com/ubuntu-ports/ focal-security universe
+			deb http://ports.ubuntu.com/ubuntu-ports/ focal-security multiverse
+			EOF
+			;;
     	2)
-    		cat<<- EOF> /etc/apt/sources.list   ##清华
-    		deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal main restricted universe multiverse
-    		deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
-    		deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
-    		deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-security main restricted universe multiverse
-    		# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal main restricted universe multiverse
-    		# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
-    		# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
-    		# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-security main restricted universe multiverse
-    		## Pre-released source, not recommended.
-    		# deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
-    		# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
-    		EOF
-    		;;
+			cat<<-EOF>/etc/apt/sources.list   ##清华arm64
+			# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
+			deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal main restricted universe multiverse
+			# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal main restricted universe multiverse
+			deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-updates main restricted universe multiverse
+			# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-updates main restricted universe multiverse
+			deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-backports main restricted universe multiverse
+			# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-backports main restricted universe multiverse
+			deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-security main restricted universe multiverse
+			# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-security main restricted universe multiverse
+			
+			# 预发布软件源，不建议启用
+			# deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-proposed main restricted universe multiverse
+			# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ focal-proposed main restricted universe multiverse
+			EOF
+			;;
     	3)
-    		cat<<- EOF> /etc/apt/sources.list    ##北京外国语大学
-    		# Generated by distrobuilder
-    		##deb https://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse
-    		##deb https://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse
-    		##deb https://ports.ubuntu.com/ubuntu-ports focal-security main restricted universe multiverse
-    		# deb https://mirrors.huaweicloud.com/ubuntu-ports/ focal-proposed main restricted universe multiverse
-    		deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ focal main restricted universe multiverse
-    		deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-updates main restricted universe multiverse
-    		deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-backports main restricted universe multiverse
-    		deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-security main restricted universe multiverse
-    		EOF
-    		;;
+			cat<<-EOF>/etc/apt/sources.list    ##北京外国语大学
+			# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
+			deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ focal main restricted universe multiverse
+			# deb-src https://mirrors.bfsu.edu.cn/ubuntu-ports/ focal main restricted universe multiverse
+			deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-updates main restricted universe multiverse
+			# deb-src https://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-updates main restricted universe multiverse
+			deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-backports main restricted universe multiverse
+			# deb-src https://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-backports main restricted universe multiverse
+			deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-security main restricted universe multiverse
+			# deb-src https://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-security main restricted universe multiverse
+			
+			# 预发布软件源，不建议启用
+			# deb https://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-proposed main restricted universe multiverse
+			# deb-src https://mirrors.bfsu.edu.cn/ubuntu-ports/ focal-proposed main restricted universe multiverse
+			EOF
+			;;
     	4)
-    		cat<<- EOF> /etc/apt/sources.list    ##阿里云
-    		deb http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
-    		deb http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
-    		deb http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
-    		deb http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
-    		# deb-src http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
-    		# deb-src http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
-    		# deb-src http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
-    		# deb-src http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
-    		## Pre-released source, not recommended.
-    		# deb http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
-    		# deb-src http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
-    		EOF
-    		;;
+			cat<<-EOF>/etc/apt/sources.list    ##阿里云  Arm64，Armhf等
+			# 默认注释了源码仓库，如有需要可自行取消注释
+			deb https://mirrors.aliyun.com/ubuntu-ports/ xenial main restricted universe multiverse
+			# deb-src https://mirrors.aliyun.com/ubuntu-ports/ xenial main main restricted universe multiverse
+			deb https://mirrors.aliyun.com/ubuntu-ports/ xenial-updates main restricted universe multiverse
+			# deb-src https://mirrors.aliyun.com/ubuntu-ports/ xenial-updates main restricted universe multiverse
+			deb https://mirrors.aliyun.com/ubuntu-ports/ xenial-backports main restricted universe multiverse
+			# deb-src https://mirrors.aliyun.com/ubuntu-ports/ xenial-backports main restricted universe multiverse
+			deb https://mirrors.aliyun.com/ubuntu-ports/ xenial-security main restricted universe multiverse
+			# deb-src https://mirrors.aliyun.com/ubuntu-ports/ xenial-security main restricted universe multiverse
+						
+			# 预发布软件源，不建议启用
+			# deb https://mirrors.aliyun.com/ubuntu-ports/ xenial-proposed main restricted universe multiverse
+			# deb-src https://mirrors.aliyun.com/ubuntu-ports/ xenial-proposed main restricted universe multiverse
+ 			EOF
+			;;
     	5)
-    		cat<<- EOF> /etc/apt/sources.list    ##中科大
-    		deb https://mirrors.ustc.edu.cn/ubuntu/ focal main restricted universe multiverse
-    		deb https://mirrors.ustc.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
-    		deb https://mirrors.ustc.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
-    		deb https://mirrors.ustc.edu.cn/ubuntu/ focal-security main restricted universe multiverse
-    		# deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal main restricted universe multiverse
-    		# deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
-    		# deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
-    		# deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-security main restricted universe multiverse
-    		## Pre-released source, not recommended.
-    		# deb https://mirrors.ustc.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
-    		# deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
-    		EOF
-    		;;
-    	5)
-    		cat<<- EOF> /etc/apt/sources.list
-    		deb http://mirrors.163.com/ubuntu/ focal main restricted universe multiverse
-    		deb http://mirrors.163.com/ubuntu/ focal-security main restricted universe multiverse
-    		deb http://mirrors.163.com/ubuntu/ focal-updates main restricted universe multiverse
-    		deb http://mirrors.163.com/ubuntu/ focal-backports main restricted universe multiverse
-    		# deb-src http://mirrors.163.com/ubuntu/ focal main restricted universe multiverse
-    		# deb-src http://mirrors.163.com/ubuntu/ focal-security main restricted universe multiverse
-    		# deb-src http://mirrors.163.com/ubuntu/ focal-updates main restricted universe multiverse
-    		# deb-src http://mirrors.163.com/ubuntu/ focal-backports main restricted universe multiverse
-    		## Pre-released source, not recommended.
-    		# deb http://mirrors.163.com/ubuntu/ focal-proposed main restricted universe multiverse
-    		# deb-src http://mirrors.163.com/ubuntu/ focal-proposed main restricted universe multiverse
-    		EOF
-    		;;
+			cat<<-EOF>/etc/apt/sources.list    ##中科大  arm64, armhf, PowerPC, ppc64el, s390x
+			# 默认注释了源码仓库，如有需要可自行取消注释
+			deb https://mirrors.ustc.edu.cn/ubuntu-ports/ xenial main restricted universe multiverse
+			# deb-src https://mirrors.ustc.edu.cn/ubuntu-ports/ xenial main main restricted universe multiverse
+			deb https://mirrors.ustc.edu.cn/ubuntu-ports/ xenial-updates main restricted universe multiverse
+			# deb-src https://mirrors.ustc.edu.cn/ubuntu-ports/ xenial-updates main restricted universe multiverse
+			deb https://mirrors.ustc.edu.cn/ubuntu-ports/ xenial-backports main restricted universe multiverse
+			# deb-src https://mirrors.ustc.edu.cn/ubuntu-ports/ xenial-backports main restricted universe multiverse
+			deb https://mirrors.ustc.edu.cn/ubuntu-ports/ xenial-security main restricted universe multiverse
+			# deb-src https://mirrors.ustc.edu.cn/ubuntu-ports/ xenial-security main restricted universe multiverse
+			
+			# 预发布软件源，不建议启用
+			# deb https://mirrors.ustc.edu.cn/ubuntu-ports/ xenial-proposed main restricted universe multiverse
+			# deb-src https://mirrors.ustc.edu.cn/ubuntu-ports/ xenial-proposed main restricted universe multiverse
+			EOF
+			;;
+    	6)
+			cat<<-EOF>/etc/apt/sources.list
+			deb http://mirrors.163.com/ubuntu-ports// focal main restricted universe multiverse
+			deb http://mirrors.163.com/ubuntu-ports// focal-security main restricted universe multiverse
+			deb http://mirrors.163.com/ubuntu-ports// focal-updates main restricted universe multiverse
+			deb http://mirrors.163.com/ubuntu-ports// focal-backports main restricted universe multiverse
+			# deb-src http://mirrors.163.com/ubuntu-ports// focal main restricted universe multiverse
+			# deb-src http://mirrors.163.com/ubuntu-ports// focal-security main restricted universe multiverse
+			# deb-src http://mirrors.163.com/ubuntu-ports// focal-updates main restricted universe multiverse
+			# deb-src http://mirrors.163.com/ubuntu-ports// focal-backports main restricted universe multiverse
+			## Pre-released source, not recommended.
+			# deb http://mirrors.163.com/ubuntu-ports// focal-proposed main restricted universe multiverse
+			# deb-src http://mirrors.163.com/ubuntu-ports// focal-proposed main restricted universe multiverse
+			EOF
+			;;
     	*)
-    		return
-    		;;
+			return
+			;;
 	esac
 	
 	msg $red "更换成功！"
@@ -446,22 +466,22 @@ _Sources(){
 	}
 	
 		OPTIONS=(
-			1 "Termux 源"   
-			2 "Ubuntu 源"    
+			1 "Ubuntu 源（arm64，armhf）"   
+			2 "Termux 源（arm64，armhf）"  
 			3 "取消")
 
     _dialog "首页→更换源sources.list" "请选择" $OPTIONS
  
 	case $op in
     	1)
-    		_Termux
-    		;;
+			_Ubuntu
+			;;
     	2)
-    		_Ubuntu
-    		;;
+			_Termux
+			;;
     	*)
-    		return
-    		;;
+			return
+			;;
 	esac   
 }
 
@@ -554,23 +574,23 @@ _xrdp(){
 
 	case $op in
     	1)
-    		if [ -z "`dpkg -l | grep xrdp`" ];then
-    			echo -e "$red请先安装xrdp！$white"
-    			enter
-    			return
-    		else
-    			_start
-    		fi
-    		;;
+			if [ -z "`dpkg -l | grep xrdp`" ];then
+				echo -e "$red请先安装xrdp！$white"
+				enter
+				return
+			else
+				_start
+			fi
+			;;
     	2)
-    		_i
-    		;;
+			_i
+			;;
     	3)
-    		_d
-    		;;
+			_d
+			;;
     	*)
-    		return
-    		;;
+			return
+			;;
 	esac
 }
 
@@ -593,9 +613,11 @@ _update(){
 	echo -e "\n\t$green------------------------------$white"
 	echo -e "\t$red ubuntu脚本迭代更新信息$white"
 	echo -e "\t (1)ubuntu 1.0 最初代脚本$white"
-	echo -e "\t (2)ubuntu 1.5 $red（当前版本）$white"
+	echo -e "\t (2)ubuntu 1.5 $white"
 	echo -e "\t     ●添加_软件安装_功能$white"
 	echo -e "\t     ●添加_桌面美化_功能$white"
+	echo -e "\t (3)ubuntu 2.0 $red（当前版本）$white"
+	echo -e "\t     ●修复若干Bug，添加若干功能$white"
 	echo -e "\t$green------------------------------$white"
 	echo -e "\n\n\t作者不定时更新脚本，如想体验新功能，更新ubuntu脚本即可体验！"
 	enter
@@ -604,8 +626,8 @@ _update(){
 	do
 		while :
 		do
-			wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/$x" -O "/tmp/$x"
-			#wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/usr/$x" -O "/tmp/$x"
+			#wget -c "https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/usr/$x" -O "/tmp/$x"
+			wget -c "gitee.com/djyd/termux-ubuntu2004/raw/main/usr/$x" -O "/tmp/$x"
 			if [ ! "$?" == "0" ];then
 				echo -e "$yellow下载资源失败！请检查网络再继续下载……"
 				enter
@@ -733,27 +755,25 @@ _Main(){
 	
     case $op in 
     	1)
-    		source $(dirname $0)/software
-    		_app
-    		;;
+			source $(dirname $0)/software
+			_app
+			;;
     	2)
-    		_theme
-    		;;
+			_theme
+			;;
     	3)
-    		_Sources
-    		;;
+			_Sources
+			;;
     	4)
-    		echo "测试"
-    		enter
-    		_xrdp
-    		;;
+			_xrdp
+			;;
     	5)
-    		clear
-    		vnc
-    		enter
-    		;;
+			clear
+			vnc
+			enter
+			;;
     	6)
-    		msg $red "ubuntu设备信息"
+			msg $red "ubuntu设备信息"
 			echo -e "$green----------------版本-----------------$white"
 			lsb_release -a
 			echo -e "$green----------------磁盘-----------------$white"
@@ -762,26 +782,26 @@ _Main(){
 			service --status-all 
 			enter
 			_other
-    		;;
+			;;
     	7)
-    		_update
-    		;;
+			_update
+			;;
     	8)
-    		_clear
-    		;;
+			_clear
+			;;
     	9)
-    		msg $yellow "关机提示！"
-    		echo -e "*****************************************"
-    		echo -e "  ******$red请先确保资料已保存再关机！$white*****"
-    		echo -e "*****************************************"
-    		enter
-    		enter
-    		kill -9 `sudo ps -ef | grep '/data/data/com.termux/files/usr/bin/bash -l' | grep -v grep | awk '{print $2}'`
-    		;;
+			msg $yellow "关机提示！"
+			echo -e "*****************************************"
+			echo -e "  ******$red请先确保资料已保存再关机！$white*****"
+			echo -e "*****************************************"
+			enter
+			enter
+			kill -9 `sudo ps -ef | grep '/data/data/com.termux/files/usr/bin/bash -l' | grep -v grep | awk '{print $2}'`
+			;;
     	*)
-    		clear
-    		export s=1
-    		;;
+			clear
+			export s=1
+			;;
 esac
 }
 

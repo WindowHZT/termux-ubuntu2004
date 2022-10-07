@@ -460,10 +460,10 @@ _wps(){
  	       [[ ! $(command -v ${i}) ]] ||sudo  ${i}
   		done
 		
-		sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/wps
-		sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/wpspdf
-		sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/et
-		sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/wpp
+		#sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/wps
+		#sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/wpspdf
+		#sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/et
+		#sed -i '2{s/^/export LANGUAGE="zh_CN:zh"/}' /usr/bin/wpp
 		msg $green "安装完毕～"
 		echo -e "\n\n\t$red如果因网络波动没有安装成功的，请卸载重装！$white"
 		enter
@@ -786,7 +786,7 @@ _sogo(){
 }
 #------------------------------------------------小企鹅输入法------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------------------------------------
-__penguinpinyin(){
+_penguinpinyin(){
 	_i(){
 		msg $red "安装小企鹅输入法"
 		[ -z "`dpkg -l | grep fcitx-pinyin`" ]&&sudo apt install fcitx-pinyin -y
@@ -973,7 +973,7 @@ _app(){
  	 	  		_googlepinyin
   	 	 		;; 
 	    	3)
-	    		echo "$red功能测试中ing，暂时无法使用$white"
+	    		echo -e "$red功能测试中ing，暂时无法使用$white"
 	    		enter
 	    		return
  	 	  		_sougoupinyin

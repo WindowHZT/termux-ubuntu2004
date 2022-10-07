@@ -9,7 +9,7 @@ cyanine="\e[36;1m"    #青蓝
 white="\e[0m"
 
 CONFIG=/usr/local/bin/.config
-
+source $CONFIG
 msg() { clear;echo -e "\n\t\t$blue[*]$white$1$2$white\n" ;:;}  ##自定义通告颜色
 
 
@@ -35,7 +35,7 @@ _login(){
 
 _start(){
 	clear
-	echo -e "\n$red密码为$green$USER$red的密码$white"
+	echo -e "\n$green$USER$red的密码$white"
 	sudo echo 
 	service dbus restart
 	service dbus stop
@@ -44,7 +44,6 @@ _start(){
 	
 	##启动tigervnc 
 	vncserver -kill :1  > /dev/null 2>&1
-	source $CONFIG
 	LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver -localhost no -depth 24 -name remote-desktop $GEO :$PORT
 	
 	##启动xrdp
@@ -268,8 +267,8 @@ _xfce(){
 	
 	##设置面板图标
 	mkdir -p ~/.icons
-	wget https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/mix/ubuntu-logo-icon.png -O /tmp/ubuntu-logo-icon.png
-	#wget gitee.com/djyd/termux-ubuntu2004/raw/main/mix/ubuntu-logo-icon.png	 -O /tmp/ubuntu-logo-icon.png
+	#wget https://raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/mix/ubuntu-logo-icon.png -O /tmp/ubuntu-logo-icon.png
+	wget gitee.com/djyd/termux-ubuntu2004/raw/main/mix/ubuntu-logo-icon.png	 -O /tmp/ubuntu-logo-icon.png
 	
 	cat<<-EOF > "/usr/share/applications/ubuntu.desktop"
 	[Desktop Entry]
@@ -286,34 +285,9 @@ _xfce(){
 	EOF
 	
 	sudo chmod 644 /usr/share/applications/ubuntu.desktop
+	echo -e "\n$green$USER$red的密码$white"
+	LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver -localhost no -depth 24 -name remote-desktop :1
 
-	if [ -f /etc/dpkg/dpkg.cfg.d/excludes ] || [ -f /etc/dpkg/dpkg.cfg.d/excludes.dpkg-tmp ]; then
-	    if [ -f /etc/dpkg/dpkg.cfg.d/excludes ]; then
- 	       mv /etc/dpkg/dpkg.cfg.d/excludes /etc/dpkg/dpkg.cfg.d/excludes.dpkg-tmp
-		fi
-
-		apt-get update -y
-	 	apt-get upgrade -y
-		dpkg -S /usr/share/man/ |sed 's|, |\n|g;s|: [^:]*$||' | DEBIAN_FRONTEND=noninteractive xargs apt-get install --reinstall -y
-		dpkg --verify --verify-format rpm | awk '/..5......   \/usr\/share\/doc/ {print $2}' | sed 's|/[^/]*$||' | sort |uniq \
- 	        | xargs dpkg -S | sed 's|, |\n|g;s|: [^:]*$||' | uniq | DEBIAN_FRONTEND=noninteractive xargs apt-get install --reinstall -y
-		dpkg --verify --verify-format rpm | awk '/..5......   \/usr\/share\/locale/ {print $2}' | sed 's|/[^/]*$||' | sort |uniq \
-			| xargs dpkg -S | sed 's|, |\n|g;s|: [^:]*$||' | uniq | DEBIAN_FRONTEND=noninteractive xargs apt-get install --reinstall -y
-    
-		if dpkg --verify --verify-format rpm | awk '/..5......   \/usr\/share\/doc/ {exit 1}'; then
-			rm /etc/dpkg/dpkg.cfg.d/excludes.dpkg-tmp
-		else
-			dpkg --verify --verify-format rpm | awk '/..5......   \/usr\/share\/doc/ {print " " $2}'
-		fi
-	fi
-
-
-
-	if  [ "$(dpkg-divert --truename /usr/bin/man)" = "/usr/bin/man.REAL" ]; then
-		rm -f /usr/bin/man
-		dpkg-divert --quiet --remove --rename /usr/bin/man
-	fi
-	rm -f /etc/update-motd.d/60-unminimize
 
 }
 
@@ -326,8 +300,6 @@ if [ ! -e $CONFIG  ];then
 	service dbus start
 	_start
 	
-	#添加面板数组
-	xfconf-query -c xfce4-panel -np /panels/panel-2/plugin-ids -t 'int' -s 15 -t 'int' -s 16 -t 'int' -s 17 -t 'int' -s 18 -t 'int' -s 19 -t 'int' -s 20 -t 'int' -s 34 -t 'int' -s 33 -t 'int' -s 21 -t 'int' -s 22
 	
 	##增加ubuntu
 	xfconf-query -c xfce4-panel -np "/plugins/plugin-33" -t 'string' -s "launcher"
@@ -336,7 +308,10 @@ if [ ! -e $CONFIG  ];then
 	##增加截图
 	xfconf-query -c xfce4-panel -np "/plugins/plugin-34" -t 'string' -s "launcher"
 	xfconf-query -c xfce4-panel -np "/plugins/plugin-34/items" -t 'string' -a -s "xfce4-screenshooter.desktop"
-
+	
+	#添加面板数组
+	xfconf-query -c xfce4-panel -np /panels/panel-2/plugin-ids -t 'int' -s 15 -t 'int' -s 16 -t 'int' -s 17 -t 'int' -s 18 -t 'int' -s 19 -t 'int' -s 20 -t 'int' -s 34 -t 'int' -s 33 -t 'int' -s 21 -t 'int' -s 22
+	
 	##设置状态栏图标
 	xfconf-query -c xfce4-panel -np '/plugins/plugin-1/button-icon' -t 'string' -s "/tmp/ubuntu-logo-icon.png"
 	##设置状态栏大小
@@ -350,34 +325,43 @@ if [ ! -e $CONFIG  ];then
 	
 	echo "284684.56 513853.46" > /proc/uptime
 	echo "0.54 0.41 0.30 1/931 370386" >/proc/loadavg
-:<<EO
+	
 	msg $red "开始汉化xfce4桌面^_^"
 	if [ -f /etc/dpkg/dpkg.cfg.d/excludes ] || [ -f /etc/dpkg/dpkg.cfg.d/excludes.dpkg-tmp ]; then
+	    echo "测试1";read op
 	    if [ -f /etc/dpkg/dpkg.cfg.d/excludes ]; then
- 	       sudo  mv /etc/dpkg/dpkg.cfg.d/excludes /etc/dpkg/dpkg.cfg.d/excludes.dpkg-tmp
+ 	       #sudo  mv /etc/dpkg/dpkg.cfg.d/excludes /etc/dpkg/dpkg.cfg.d/excludes.dpkg-tmp
+ 	       echo "测试2";read op
 		fi
 
 		sudo apt-get update -y
 	 	sudo apt-get upgrade -y
+	 	echo "测试3";read op
 		sudo dpkg -S /usr/share/man/ |sed 's|, |\n|g;s|: [^:]*$||' | DEBIAN_FRONTEND=noninteractive xargs sudo apt-get install --reinstall -y
+		echo "测试4";read op
 		sudo dpkg --verify --verify-format rpm | awk '/..5......   \/usr\/share\/doc/ {print $2}' | sed 's|/[^/]*$||' | sort |uniq \
  	        | xargs sudo dpkg -S | sed 's|, |\n|g;s|: [^:]*$||' | uniq | DEBIAN_FRONTEND=noninteractive xargs sudo apt-get install --reinstall -y
+		echo "测试5";read op
 		sudo dpkg --verify --verify-format rpm | awk '/..5......   \/usr\/share\/locale/ {print $2}' | sed 's|/[^/]*$||' | sort |uniq \
 			| xargs sudo dpkg -S | sed 's|, |\n|g;s|: [^:]*$||' | uniq | DEBIAN_FRONTEND=noninteractive xargs sudo apt-get install --reinstall -y
-    
+    	echo "测试6";read op
 		if sudo dpkg --verify --verify-format rpm | awk '/..5......   \/usr\/share\/doc/ {exit 1}'; then
+			echo "测试7";read op
 			sudo rm /etc/dpkg/dpkg.cfg.d/excludes.dpkg-tmp
 		else
+			echo "测试8";read op
 			sudo dpkg --verify --verify-format rpm | awk '/..5......   \/usr\/share\/doc/ {print " " $2}'
 		fi
 	fi
 
 	if  [ "$(sudo dpkg-divert --truename /usr/bin/man)" = "/usr/bin/man.REAL" ]; then
+		echo "测试9";read op
 		sudo rm -f /usr/bin/man
+		echo "测试10";read op
 		sudo dpkg-divert --quiet --remove --rename /usr/bin/man
 	fi
+	echo "测试11";read op
 	sudo rm -f /etc/update-motd.d/60-unminimize
-EO
 
 	startTime=`cat /data/data/com.termux/files/home/Time`
 	rm -rf /data/data/com.termux/files/home/Time
@@ -385,12 +369,10 @@ EO
 	st=`date -d  "$startTime" +%s`
 	et=`date -d  "$endTime" +%s`
 	sumTime=$(($et-$st))
-	
+	xfconf-query -c xfce4-panel -np /panels/panel-2/plugin-ids -t 'int' -s 15 -t 'int' -s 16 -t 'int' -s 17 -t 'int' -s 18 -t 'int' -s 19 -t 'int' -s 20 -t 'int' -s 34 -t 'int' -s 33 -t 'int' -s 21 -t 'int' -s 22
 	echo -e "\n\n\t安装ubuntu20.04总耗时 : `echo $sumTime/60 | bc` Minutes."
-	echo -e "$red 按下回车关机，重新打开软件即可冲浪🏄$white"
-	read op
-	kill -9 `sudo ps -ef | grep '/data/data/com.termux/files/usr/bin/bash -l' | grep -v grep | awk '{print $2}'`
-
+	echo -e "$red Ctrl+d关机，重新打开软件即可冲浪🏄$white"
+	exit
 fi
 
 case $1 in
