@@ -399,7 +399,7 @@ echo -e "\t\t**************"
 echo -ne "\e[31;1m请在5s内输入：\e[0m"
 read -t 5 op
 if [ "\$?" == "0" ];then
-	[ "\$op" == "" ]&& termux-wake-lock;./$bin
+	[ "\$op" == "" ]&& ./$bin;termux-wake-lock
 else
 	echo -e "\n若想启动ubuntu系统也可以手动输入\e[31;1m ./start-ubuntu20.sh\e[0m 命令哦"
 fi
