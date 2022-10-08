@@ -197,11 +197,6 @@ _xfce(){
 	sudo eatmydata apt install keyboard-configuration -y
 	sudo eatmydata apt install tzdata -y
 	sudo eatmydata apt install sudo wget nano inetutils-tools dialog bc dbus-x11 -y 
-	service dbus start
-	service dbus restart
-	service dbus stop
-	dbus-daemon --system
-	service dbus status 
 
 	sudo eatmydata apt install xfce4 xfce4-goodies xfce4-terminal exo-utils tigervnc-standalone-server tigervnc-common  ffmpeg  language-pack-en --no-install-recommends -y
 	sudo eatmydata apt clean git -y
