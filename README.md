@@ -39,7 +39,7 @@ bash -c "$(curl -L raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/ub
 # Some screenshots
 
 ~~~mermaid
-graph TD;
+graph TD
 
     A[开始] --> B[设置画笔颜色为黄色和背景色为黑色，笔宽为10]
 
