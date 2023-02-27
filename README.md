@@ -38,22 +38,34 @@ bash -c "$(curl -L raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/ub
 
 # Some screenshots
 
+
+
+
 ```mermaid
 
 graph TB
 
-　　client-->| findConfigServices|LoadBalancer;
+    A[开始] --> B[设置画笔颜色为黄色和背景色为黑色，笔宽为10];
 
-　　LoadBalancer-->| findService|metaS测速er;
+    B --> C[初始化循环计数器a=0];
 
-　　metaServer-->Eureka;
+    C --> D[判断循环条件a<100];
 
-　　client-->| access via ip:port/client load balance/error retry|ConfigService;
+    D --> |是| E[将画笔抬起，随机移动到一个位置];
 
-　　ConfigService-->| register/cancel|Eureka;
+    E --> F[将画笔放下，初始化内部循环计数器i=0];
 
-　　ConfigService-->|read/write|ConfigDB;
+    F --> G[判断循环条件i<5];
+
+    G --> |是| H[向前移动15个单位，向左转144度];
+
+    H --> I[将内部循环计数器i+1];
+
+    I --> J[返回G继续判断循环条件];
+
+    G --> |否| K[返回E继续绘制下一个五角星];
+
+    D --> |否| L[结束
 
 ```
-
 
