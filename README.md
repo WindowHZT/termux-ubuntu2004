@@ -38,6 +38,26 @@ bash -c "$(curl -L raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/ub
 
 # Some screenshots
 
+
+```mermaid
+
+graph TB
+
+　　client-->| findConfigServices|LoadBalancer;
+
+　　LoadBalancer-->| findService|metaServer;
+
+　　metaServer-->Eureka;
+
+　　client-->| access via ip:port/client load balance/error retry|ConfigService;
+
+　　ConfigService-->| register/cancel|Eureka;
+
+　　ConfigService-->|read/write|ConfigDB;
+
+```
+
+
 ~~~mermaid
 graph TD
 
