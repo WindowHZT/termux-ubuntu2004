@@ -38,7 +38,7 @@ bash -c "$(curl -L raw.githubusercontent.com/WindowHZT/termux-ubuntu2004/main/ub
 
 # Some screenshots
 
-
+~~~mermaid
 graph TD;
 
     A[开始] --> B[设置画笔颜色为黄色和背景色为黑色，笔宽为10]
@@ -62,4 +62,4 @@ graph TD;
     G --> |否| K[返回E继续绘制下一个五角星]
 
     D --> |否| L[结束]
-
+~~~
